@@ -20,13 +20,13 @@ const Bio: React.FC = () => (
 const Contact: React.FC = () => (
   <section className="w-full max-w-lg mx-auto p-6 text-center">
     <h2 className="text-xl font-bold">Contact Me</h2>
-    <form className="mt-4 flex flex-col space-y-4">
-      <input type="text" placeholder="Your Name" className="p-2 border rounded w-full" />
-      <input type="email" placeholder="Your Email" className="p-2 border rounded w-full" />
-      <textarea placeholder="Your Message" className="p-2 border rounded w-full"></textarea>
-      <button className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Send</button>
+    <form className="mt-4 flex flex-col space-y-4" action="/form-submit" method="POST">
+      <input type="text" name="name" id="name" placeholder="Your Name" required className="p-2 border rounded w-full" />
+      <input type="email" name="email" id="email" placeholder="Your Email" required className="p-2 border rounded w-full" />
+      <textarea placeholder="Your Message" name="message" id="message" required className="p-2 border rounded w-full"></textarea>
+      <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Send</button>
     </form>
-  </section>
+  </section >
 );
 
 const Footer: React.FC = () => (
