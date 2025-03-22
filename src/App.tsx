@@ -3,7 +3,7 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 const Header: React.FC = () => (
   <header className="w-full text-center p-6 bg-gray-900 text-white">
-    <img src="/public/profile.jpg" alt="Jackson" className="w-24 h-24 mx-auto rounded-full" />
+    <img src="/profile.jpg" alt="Jackson" className="w-24 h-24 mx-auto rounded-full" />
     <h1 className="text-2xl font-bold mt-4">Jackson</h1>
     <p className="text-lg">Senior Software Engineer @ Mailchimp</p>
   </header>
