@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 const Header: React.FC = () => (
@@ -17,17 +17,52 @@ const Bio: React.FC = () => (
   </section>
 );
 
-const Contact: React.FC = () => (
-  <section className="w-full max-w-lg mx-auto p-6 text-center">
-    <h2 className="text-xl font-bold">Contact Me</h2>
-    <form className="mt-4 flex flex-col space-y-4">
-      <input type="text" placeholder="Your Name" className="p-2 border rounded w-full" />
-      <input type="email" placeholder="Your Email" className="p-2 border rounded w-full" />
-      <textarea placeholder="Your Message" className="p-2 border rounded w-full"></textarea>
-      <button className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Send</button>
-    </form>
-  </section>
-);
+const Contact: React.FC = () => {
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("/form-submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log("Form submitted successfully!");
+        setFormData({ name: "", email: "", message: "" }); // Reset form
+      } else {
+        console.error("Form submission failed.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
+
+  return (
+    <section className="w-full max-w-lg mx-auto p-6 text-center">
+      <h2 className="text-xl font-bold">Contact Me</h2>
+      <form onSubmit={handleSubmit} className="mt-4 flex flex-col space-y-4">
+        <input onChange={handleChange} type="text" name="name" id="name" placeholder="Your Name" required className="p-2 border rounded w-full" />
+        <input onChange={handleChange} type="email" name="email" id="email" placeholder="Your Email" required className="p-2 border rounded w-full" />
+        <textarea placeholder="Your Message" name="message" id="message" required className="p-2 border rounded w-full"></textarea>
+        <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Send</button>
+      </form>
+    </section >
+  )
+};
 
 const Footer: React.FC = () => (
   <footer className="w-full text-center p-6 bg-gray-900 text-white mt-auto">
