@@ -57,7 +57,7 @@ const Contact: React.FC = () => {
       <form onSubmit={handleSubmit} className="mt-4 flex flex-col space-y-4">
         <input onChange={handleChange} type="text" name="name" id="name" placeholder="Your Name" required className="p-2 border rounded w-full" />
         <input onChange={handleChange} type="email" name="email" id="email" placeholder="Your Email" required className="p-2 border rounded w-full" />
-        <textarea placeholder="Your Message" name="message" id="message" required className="p-2 border rounded w-full"></textarea>
+        <textarea onChange={handleChange} placeholder="Your Message" name="message" id="message" required className="p-2 border rounded w-full"></textarea>
         <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Send</button>
       </form>
     </section >
