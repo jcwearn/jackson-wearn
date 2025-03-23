@@ -4,15 +4,23 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 const Header: React.FC = () => (
   <header className="w-full text-center p-6 bg-gray-900 text-white">
     <img src="/profile.jpg" alt="Jackson" className="w-24 h-24 mx-auto rounded-full" />
-    <h1 className="text-2xl font-bold mt-4">Jackson</h1>
+    <h1 className="text-2xl font-bold mt-4">Jackson Wearn</h1>
     <p className="text-lg">Senior Software Engineer @ Mailchimp</p>
   </header>
 );
 
 const Bio: React.FC = () => (
-  <section className="w-full max-w-2xl mx-auto p-6 text-center mt-4">
+  <section className="w-full max-w-2xl mx-auto p-6 text-left mt-4">
     <p className="text-gray-300 text-lg">
-      Hi. My name is Jackson. I am a Senior Software Engineer for the Mobile Apps Team at Mailchimp. I am a chronic tinkerer. I read code, I write code, and I love expanding my technological arsenal. I have a strong fondness for Node.js and Ruby, but I am always eager to try bleeding edge technologies. Feel free to drop me a line if you’re interested in learning about my work experience, or if you just want to chat.
+      Hi, I'm Jackson, a seasoned software engineer with a strong passion for backend architecture. While I have worn many hats and can comfortably work across the full stack, my expertise and interests lie in designing scalable and efficient backend systems. In recent years, I’ve worked extensively with Go, which has become my preferred language. Currently, my work revolves around PHP for backend development and JavaScript/TypeScript with React for the frontend.
+    </p>
+    <br />
+    <p className="text-gray-300 text-lg">
+      Beyond coding, I have a deep appreciation for outdoor adventures and strategic games. I spend my free time mountain biking, hiking, camping, and, most recently, rollerblading. I also love board games and experimenting with vegetarian cooking.
+    </p>
+    <br />
+    <p className="text-gray-300 text-lg">
+      If you're interested in discussing technology, backend architecture, or any of my hobbies, feel free to reach out!
     </p>
   </section>
 );
@@ -46,7 +54,7 @@ const Contact: React.FC = () => {
 
       if (response.ok) {
         setToast({ message: "Form submitted successfully!", type: "success" });
-        setFormData({ name: "", email: "", message: "" }); // Reset form
+        setFormData({ name: "", email: "", message: "" });
       } else {
         setToast({ message: "Form submission failed.", type: "error" });
       }
@@ -57,14 +65,14 @@ const Contact: React.FC = () => {
     }
 
     // Hide toast after 3 seconds
-    setTimeout(() => setToast(null), 3000);
+    setTimeout(() => setToast(null), 5000);
   };
 
   return (
     <section className="w-full max-w-lg mx-auto p-6 text-center overflow-visible relative">
       {toast && (
         <div
-          className={`mb-4 px-4 py-2 rounded z-50 ${toast.type === "success" ? "bg-green-500 text-white" : "bg-red-500 text-white"
+          className={`fixed top-4 right-4 px-4 py-2 rounded shadow-lg z-50 transition-opacity duration-300 ${toast.type === "success" ? "bg-green-500 text-white" : "bg-red-500 text-white"
             }`}
         >
           {toast.message}
