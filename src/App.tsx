@@ -27,12 +27,15 @@ const Contact: React.FC = () => {
 
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await fetch("/form-submit", {
@@ -49,6 +52,8 @@ const Contact: React.FC = () => {
       }
     } catch (error) {
       setToast({ message: "Error submitting form.", type: "error" });
+    } finally {
+      setLoading(false);
     }
 
     // Hide toast after 3 seconds
@@ -96,8 +101,16 @@ const Contact: React.FC = () => {
           required
           className="p-2 border rounded w-full"
         ></textarea>
-        <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-          Send
+        <button
+          type="submit"
+          className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 flex items-center justify-center"
+          disabled={loading} // Disable button when loading
+        >
+          {loading ? (
+            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-white"></div>
+          ) : (
+            "Send"
+          )}
         </button>
       </form>
     </section>
