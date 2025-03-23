@@ -33,12 +33,23 @@ const Contact: React.FC = () => {
     message: "",
   });
 
-  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error", visible: boolean } | null>(null);
 
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  type ToastType = "success" | "error";
+
+  const showToast = (message: string, type: ToastType) => {
+    setToast({ message, type, visible: true });
+
+    setTimeout(() => {
+      setToast((prev) => (prev ? { ...prev, visible: false } : null)); // Start fade-out
+      setTimeout(() => setToast(null), 500); // Remove after fade-out
+    }, 3000); // Show toast for 3 seconds
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -53,27 +64,24 @@ const Contact: React.FC = () => {
       });
 
       if (response.ok) {
-        setToast({ message: "Form submitted successfully!", type: "success" });
+        showToast("Form submitted successfully!", "success");
         setFormData({ name: "", email: "", message: "" });
       } else {
-        setToast({ message: "Form submission failed.", type: "error" });
+        showToast("Form submission failed.", "error");
       }
     } catch (error) {
-      setToast({ message: "Error submitting form.", type: "error" });
+      showToast("Error submitting form.", "error");
     } finally {
       setLoading(false);
     }
-
-    // Hide toast after 3 seconds
-    setTimeout(() => setToast(null), 5000);
   };
 
   return (
     <section className="w-full max-w-lg mx-auto p-6 text-center overflow-visible relative">
       {toast && (
         <div
-          className={`fixed top-4 right-4 px-4 py-2 rounded shadow-lg z-50 transition-opacity duration-300 ${toast.type === "success" ? "bg-green-500 text-white" : "bg-red-500 text-white"
-            }`}
+          className={`fixed top-4 right-4 px-4 py-2 rounded z-50 transition-opacity duration-500 ${toast.visible ? "opacity-100" : "opacity-0"
+            } ${toast.type === "success" ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}
         >
           {toast.message}
         </div>
