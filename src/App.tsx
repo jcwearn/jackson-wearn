@@ -25,6 +25,8 @@ const Contact: React.FC = () => {
     message: "",
   });
 
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -40,27 +42,65 @@ const Contact: React.FC = () => {
       });
 
       if (response.ok) {
-        console.log("Form submitted successfully!");
+        setToast({ message: "Form submitted successfully!", type: "success" });
         setFormData({ name: "", email: "", message: "" }); // Reset form
       } else {
-        console.error("Form submission failed.");
+        setToast({ message: "Form submission failed.", type: "error" });
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      setToast({ message: "Error submitting form.", type: "error" });
     }
+
+    // Hide toast after 3 seconds
+    setTimeout(() => setToast(null), 3000);
   };
 
-
   return (
-    <section className="w-full max-w-lg mx-auto p-6 text-center">
+    <section className="w-full max-w-lg mx-auto p-6 text-center overflow-visible relative">
+      {toast && (
+        <div
+          className={`mb-4 px-4 py-2 rounded z-50 ${toast.type === "success" ? "bg-green-500 text-white" : "bg-red-500 text-white"
+            }`}
+        >
+          {toast.message}
+        </div>
+      )}
       <h2 className="text-xl font-bold">Contact Me</h2>
       <form onSubmit={handleSubmit} className="mt-4 flex flex-col space-y-4">
-        <input onChange={handleChange} type="text" name="name" id="name" placeholder="Your Name" required className="p-2 border rounded w-full" />
-        <input onChange={handleChange} type="email" name="email" id="email" placeholder="Your Email" required className="p-2 border rounded w-full" />
-        <textarea onChange={handleChange} placeholder="Your Message" name="message" id="message" required className="p-2 border rounded w-full"></textarea>
-        <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Send</button>
+        <input
+          onChange={handleChange}
+          value={formData.name}
+          type="text"
+          name="name"
+          id="name"
+          placeholder="Your Name"
+          required
+          className="p-2 border rounded w-full"
+        />
+        <input
+          onChange={handleChange}
+          value={formData.email}
+          type="email"
+          name="email"
+          id="email"
+          placeholder="Your Email"
+          required
+          className="p-2 border rounded w-full"
+        />
+        <textarea
+          onChange={handleChange}
+          value={formData.message}
+          placeholder="Your Message"
+          name="message"
+          id="message"
+          required
+          className="p-2 border rounded w-full"
+        ></textarea>
+        <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+          Send
+        </button>
       </form>
-    </section >
+    </section>
   )
 };
 
