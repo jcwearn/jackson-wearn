@@ -148,7 +148,7 @@ const Footer: React.FC = () => (
 
 const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    return localStorage.getItem("theme") === "dark";
+    return localStorage.getItem("theme") === "light" ? false : true;
   });
 
   useEffect(() => {
