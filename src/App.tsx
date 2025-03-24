@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaGithub, FaLinkedin, FaSun, FaMoon } from "react-icons/fa";
 
 const Header: React.FC = () => (
-  <header className="w-full text-center p-6 bg-gray-900 text-white">
+  <header className="w-full text-center p-6 bg-gray-300 dark:bg-gray-900 text-black dark:text-white">
     <img src="/profile.jpg" alt="Jackson" className="w-24 h-24 mx-auto rounded-full" />
     <h1 className="text-2xl font-bold mt-4">Jackson Wearn</h1>
     <p className="text-lg">Senior Software Engineer @ Mailchimp</p>
@@ -11,15 +11,15 @@ const Header: React.FC = () => (
 
 const Bio: React.FC = () => (
   <section className="w-full max-w-2xl mx-auto p-6 text-left mt-4">
-    <p className="text-gray-300 text-lg">
+    <p className="text-black dark:text-gray-300 text-lg">
       Hi, I'm Jackson, a seasoned software engineer with a strong passion for backend architecture. While I have worn many hats and can comfortably work across the full stack, my expertise and interests lie in designing scalable and efficient backend systems. In recent years, I’ve worked extensively with Go, which has become my preferred language. Currently, my work revolves around PHP for backend development and JavaScript/TypeScript with React for the frontend.
     </p>
     <br />
-    <p className="text-gray-300 text-lg">
+    <p className="text-black dark:text-gray-300 text-lg">
       Beyond coding, I have a deep appreciation for outdoor adventures and strategic games. I spend my free time mountain biking, hiking, camping, and, most recently, rollerblading. I also love board games and experimenting with vegetarian cooking.
     </p>
     <br />
-    <p className="text-gray-300 text-lg">
+    <p className="text-black dark:text-gray-300 text-lg">
       If you're interested in discussing technology, backend architecture, or any of my hobbies, feel free to reach out!
     </p>
   </section>
@@ -77,7 +77,7 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <section className="w-full max-w-lg mx-auto p-6 text-center overflow-visible relative">
+    <section className="w-full max-w-lg mx-auto p-6 text-center overflow-visible relative text-black dark:text-white">
       {toast && (
         <div
           className={`fixed top-4 right-4 px-4 py-2 rounded z-50 transition-opacity duration-500 ${toast.visible ? "opacity-100" : "opacity-0"
@@ -119,7 +119,7 @@ const Contact: React.FC = () => {
         ></textarea>
         <button
           type="submit"
-          className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 flex items-center justify-center"
+          className="bg-blue-500 dark:dark:bg-gray-900 text-white p-2 rounded flex items-center justify-center"
           disabled={loading} // Disable button when loading
         >
           {loading ? (
@@ -134,7 +134,7 @@ const Contact: React.FC = () => {
 };
 
 const Footer: React.FC = () => (
-  <footer className="w-full text-center p-6 bg-gray-900 text-white mt-auto">
+  <footer className="w-full text-center p-6 bg-gray-300 dark:bg-gray-900 dark:text-white mt-auto">
     <div className="flex justify-center space-x-4">
       <a href="https://www.linkedin.com/in/jackson-wearn/" target="_blank" rel="noopener noreferrer">
         <FaLinkedin size={24} />
@@ -146,15 +146,37 @@ const Footer: React.FC = () => (
   </footer>
 );
 
-const App: React.FC = () => (
-  <div className="min-h-screen flex flex-col bg-gray-800 text-white">
-    <Header />
-    <div className="flex-1 flex flex-col items-center justify-center w-full max-w-3xl px-6 mx-auto">
-      <Bio />
-      <Contact />
+const App: React.FC = () => {
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
+
+  return (
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-800 test-black dark:text-white">
+      <button
+        onClick={() => setDarkMode(!darkMode)}
+        className="absolute top-4 right-4 p-2 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+      >
+        {darkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
+      </button>
+      <Header />
+      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-3xl px-6 mx-auto">
+        <Bio />
+        <Contact />
+      </div>
+      <Footer />
     </div>
-    <Footer />
-  </div>
-);
+  )
+};
 
 export default App;
