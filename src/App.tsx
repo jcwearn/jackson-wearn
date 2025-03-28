@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { FaGithub, FaLinkedin, FaSun, FaMoon } from "react-icons/fa";
 
-const Header: React.FC = () => (
-  <header className="w-full text-center p-6 bg-gray-300 dark:bg-gray-900 text-black dark:text-white">
-    <img src="/profile.jpg" alt="Jackson" className="w-24 h-24 mx-auto rounded-full" />
-    <h1 className="text-2xl font-bold mt-4">Jackson Wearn</h1>
-    <p className="text-lg">Senior Software Engineer @ Mailchimp</p>
-  </header>
-);
+const Header: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
+  return (
+    <header className="w-full text-center p-6 bg-gray-300 dark:bg-gray-900 text-black dark:text-white">
+      <div className="relative w-24 h-24 mx-auto">
+        <img
+          src="/profile.jpg"
+          alt="Jackson"
+          className="w-full h-full rounded-full dark:grayscale"
+        />
+        <img
+          src="/sunglasses.png"
+          alt="Sunglasses"
+          className={`absolute top-5 left-8 w-1/3 h-1/3 transition-opacity duration-300 ${!darkMode ? "opacity-100" : "opacity-0"
+            }`}
+        />
+      </div>
+      <h1 className="text-2xl font-bold mt-4">Jackson Wearn</h1>
+      <p className="text-lg">Senior Software Engineer @ Mailchimp</p>
+    </header>
+  );
+}
 
 const Bio: React.FC = () => (
   <section className="w-full max-w-2xl mx-auto p-6 text-left mt-4">
@@ -169,7 +183,7 @@ const App: React.FC = () => {
       >
         {darkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
       </button>
-      <Header />
+      <Header darkMode={darkMode} />
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-3xl px-6 mx-auto">
         <Bio />
         <Contact />
