@@ -83,7 +83,7 @@ const Contact: React.FC = () => {
       } else {
         showToast("Form submission failed.", "error");
       }
-    } catch (error) {
+    } catch {
       showToast("Error submitting form.", "error");
     } finally {
       setLoading(false);
