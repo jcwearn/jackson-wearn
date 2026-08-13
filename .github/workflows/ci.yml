@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Superseded pull request runs are noise. Every commit on main gets checked,
+  # because nothing else is watching it.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  check:
+    name: Format, lint, typecheck, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v5
+
+      # Reads .node-version, which is pinned exact so a new 24.x release
+      # cannot change what CI runs without a commit saying so.
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+
+      # Also the lockfile check: npm ci refuses to run if package.json and
+      # package-lock.json disagree.
+      - name: Install
+        run: npm ci
+
+      - name: Format
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      # Redundant with the build's own `tsc -b`, but near-free once the build
+      # info is warm, and a type error reads as a type error rather than as a
+      # failed build.
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
