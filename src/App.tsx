@@ -18,7 +18,7 @@ const Header: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         />
       </div>
       <h1 className="text-2xl font-bold mt-4">Jackson Wearn</h1>
-      <p className="text-lg">Senior Software Engineer @ Mailchimp</p>
+      <p className="text-lg">Senior Software Engineer · Backend &amp; Infrastructure</p>
     </header>
   );
 }
@@ -26,7 +26,7 @@ const Header: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
 const Bio: React.FC = () => (
   <section className="w-full max-w-2xl mx-auto p-6 text-left mt-4">
     <p className="text-black dark:text-gray-300 text-lg">
-      Hi, I'm Jackson, a seasoned software engineer with a strong passion for backend architecture. While I have worn many hats and can comfortably work across the full stack, my expertise and interests lie in designing scalable and efficient backend systems. In recent years, I’ve worked extensively with Go, which has become my preferred language. Currently, my work revolves around PHP for backend development and JavaScript/TypeScript with React for the frontend.
+      Hi, I'm Jackson, a seasoned software engineer with a strong passion for backend architecture. While I have worn many hats and can comfortably work across the full stack, my expertise and interests lie in designing scalable and efficient backend systems. In recent years, I’ve worked extensively with Go, which has become my preferred language. I’ve also spent a lot of time in PHP on the backend and JavaScript/TypeScript with React on the frontend.
     </p>
     <br />
     <p className="text-black dark:text-gray-300 text-lg">
@@ -133,7 +133,7 @@ const Contact: React.FC = () => {
         ></textarea>
         <button
           type="submit"
-          className="bg-blue-500 dark:dark:bg-gray-900 text-white p-2 rounded flex items-center justify-center"
+          className="bg-blue-500 dark:bg-gray-900 text-white p-2 rounded flex items-center justify-center"
           disabled={loading} // Disable button when loading
         >
           {loading ? (
@@ -176,7 +176,7 @@ const App: React.FC = () => {
   }, [darkMode]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-800 test-black dark:text-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-800 text-black dark:text-white">
       <button
         onClick={() => setDarkMode(!darkMode)}
         className="absolute top-4 right-4 p-2 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
