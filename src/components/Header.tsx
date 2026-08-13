@@ -1,4 +1,5 @@
 import React from 'react'
+import Nav from './Nav'
 
 const Header: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   return (
@@ -19,6 +20,7 @@ const Header: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
       </div>
       <h1 className="text-2xl font-bold mt-4">Jackson Wearn</h1>
       <p className="text-lg">Senior Software Engineer · Backend &amp; Infrastructure</p>
+      <Nav />
     </header>
   )
 }
