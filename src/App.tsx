@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { FaGithub, FaLinkedin, FaSun, FaMoon } from "react-icons/fa";
+import React, { useState, useEffect } from 'react'
+import { FaGithub, FaLinkedin, FaSun, FaMoon } from 'react-icons/fa'
 
 const Header: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   return (
@@ -13,89 +13,101 @@ const Header: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         <img
           src="/sunglasses.png"
           alt="Sunglasses"
-          className={`absolute top-5 left-8 w-1/3 h-1/3 transition-opacity duration-300 ${!darkMode ? "opacity-100" : "opacity-0"
-            }`}
+          className={`absolute top-5 left-8 w-1/3 h-1/3 transition-opacity duration-300 ${
+            !darkMode ? 'opacity-100' : 'opacity-0'
+          }`}
         />
       </div>
       <h1 className="text-2xl font-bold mt-4">Jackson Wearn</h1>
       <p className="text-lg">Senior Software Engineer · Backend &amp; Infrastructure</p>
     </header>
-  );
+  )
 }
 
 const Bio: React.FC = () => (
   <section className="w-full max-w-2xl mx-auto p-6 text-left mt-4">
     <p className="text-black dark:text-gray-300 text-lg">
-      Hi, I'm Jackson, a seasoned software engineer with a strong passion for backend architecture. While I have worn many hats and can comfortably work across the full stack, my expertise and interests lie in designing scalable and efficient backend systems. In recent years, I’ve worked extensively with Go, which has become my preferred language. I’ve also spent a lot of time in PHP on the backend and JavaScript/TypeScript with React on the frontend.
+      Hi, I'm Jackson, a seasoned software engineer with a strong passion for backend architecture.
+      While I have worn many hats and can comfortably work across the full stack, my expertise and
+      interests lie in designing scalable and efficient backend systems. In recent years, I’ve
+      worked extensively with Go, which has become my preferred language. I’ve also spent a lot of
+      time in PHP on the backend and JavaScript/TypeScript with React on the frontend.
     </p>
     <br />
     <p className="text-black dark:text-gray-300 text-lg">
-      Beyond coding, I have a deep appreciation for outdoor adventures and strategic games. I spend my free time mountain biking, hiking, camping, and, most recently, rollerblading. I also love board games and experimenting with vegetarian cooking.
+      Beyond coding, I have a deep appreciation for outdoor adventures and strategic games. I spend
+      my free time mountain biking, hiking, camping, and, most recently, rollerblading. I also love
+      board games and experimenting with vegetarian cooking.
     </p>
     <br />
     <p className="text-black dark:text-gray-300 text-lg">
-      If you're interested in discussing technology, backend architecture, or any of my hobbies, feel free to reach out!
+      If you're interested in discussing technology, backend architecture, or any of my hobbies,
+      feel free to reach out!
     </p>
   </section>
-);
+)
 
 const Contact: React.FC = () => {
-
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
+    name: '',
+    email: '',
+    message: '',
+  })
 
-  const [toast, setToast] = useState<{ message: string; type: "success" | "error", visible: boolean } | null>(null);
+  const [toast, setToast] = useState<{
+    message: string
+    type: 'success' | 'error'
+    visible: boolean
+  } | null>(null)
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
-  type ToastType = "success" | "error";
+  type ToastType = 'success' | 'error'
 
   const showToast = (message: string, type: ToastType) => {
-    setToast({ message, type, visible: true });
+    setToast({ message, type, visible: true })
 
     setTimeout(() => {
-      setToast((prev) => (prev ? { ...prev, visible: false } : null)); // Start fade-out
-      setTimeout(() => setToast(null), 500); // Remove after fade-out
-    }, 3000); // Show toast for 3 seconds
-  };
+      setToast((prev) => (prev ? { ...prev, visible: false } : null)) // Start fade-out
+      setTimeout(() => setToast(null), 500) // Remove after fade-out
+    }, 3000) // Show toast for 3 seconds
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
     try {
-      const response = await fetch("/form-submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/form-submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
-      });
+      })
 
       if (response.ok) {
-        showToast("Form submitted successfully!", "success");
-        setFormData({ name: "", email: "", message: "" });
+        showToast('Form submitted successfully!', 'success')
+        setFormData({ name: '', email: '', message: '' })
       } else {
-        showToast("Form submission failed.", "error");
+        showToast('Form submission failed.', 'error')
       }
     } catch {
-      showToast("Error submitting form.", "error");
+      showToast('Error submitting form.', 'error')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <section className="w-full max-w-lg mx-auto p-6 text-center overflow-visible relative text-black dark:text-white">
       {toast && (
         <div
-          className={`fixed top-4 right-4 px-4 py-2 rounded z-50 transition-opacity duration-500 ${toast.visible ? "opacity-100" : "opacity-0"
-            } ${toast.type === "success" ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}
+          className={`fixed top-4 right-4 px-4 py-2 rounded z-50 transition-opacity duration-500 ${
+            toast.visible ? 'opacity-100' : 'opacity-0'
+          } ${toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}
         >
           {toast.message}
         </div>
@@ -139,18 +151,22 @@ const Contact: React.FC = () => {
           {loading ? (
             <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-white"></div>
           ) : (
-            "Send"
+            'Send'
           )}
         </button>
       </form>
     </section>
   )
-};
+}
 
 const Footer: React.FC = () => (
   <footer className="w-full text-center p-6 bg-gray-300 dark:bg-gray-900 dark:text-white mt-auto">
     <div className="flex justify-center space-x-4">
-      <a href="https://www.linkedin.com/in/jackson-wearn/" target="_blank" rel="noopener noreferrer">
+      <a
+        href="https://www.linkedin.com/in/jackson-wearn/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <FaLinkedin size={24} />
       </a>
       <a href="https://github.com/jcwearn" target="_blank" rel="noopener noreferrer">
@@ -158,22 +174,22 @@ const Footer: React.FC = () => (
       </a>
     </div>
   </footer>
-);
+)
 
 const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    return localStorage.getItem("theme") === "light" ? false : true;
-  });
+    return localStorage.getItem('theme') === 'light' ? false : true
+  })
 
   useEffect(() => {
     if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
     } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
     }
-  }, [darkMode]);
+  }, [darkMode])
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-800 text-black dark:text-white">
@@ -191,6 +207,6 @@ const App: React.FC = () => {
       <Footer />
     </div>
   )
-};
+}
 
-export default App;
+export default App
