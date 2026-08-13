@@ -4,7 +4,6 @@ import { resume } from '../content/resume'
 const PDF = '/resume.pdf'
 
 const { profile, experience, projects, skills, education } = resume
-const links = profile.link_lines.flat()
 
 const Bullets: React.FC<{ items: { text: string }[] }> = ({ items }) => (
   <ul className="mt-2 list-disc space-y-1 pl-5 text-gray-700 dark:text-gray-300">
@@ -38,25 +37,11 @@ const Resume: React.FC = () => (
       </a>
     </div>
 
-    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-      {profile.location} ·{' '}
-      <a href={`mailto:${profile.email}`} className="underline underline-offset-4">
-        {profile.email}
-      </a>
-      {links.map((link) => (
-        <React.Fragment key={link.url}>
-          {' · '}
-          <a
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline underline-offset-4"
-          >
-            {link.label}
-          </a>
-        </React.Fragment>
-      ))}
-    </p>
+    {/* The contact line from the PDF header -- location, email, LinkedIn,
+        GitHub, this site -- is deliberately not repeated here. The footer
+        already carries the social links on every page, the contact form is on
+        the home page, and the PDF still has all of it for anyone who takes the
+        file to read offline. */}
 
     <p className="mt-4 text-gray-700 dark:text-gray-300">{profile.summary}</p>
 

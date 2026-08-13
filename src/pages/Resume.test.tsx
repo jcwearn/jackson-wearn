@@ -54,15 +54,19 @@ describe('Resume', () => {
     }
   })
 
-  it('renders contact details as usable links', () => {
-    render(<Resume />)
+  // The PDF's contact header is not repeated on this page: the footer carries
+  // the social links site-wide and the contact form lives on the home page.
+  // Asserted rather than assumed, because resume.json still contains all of it
+  // and rendering it back is a one-line change.
+  it('does not repeat the contact header', () => {
+    const { container } = render(<Resume />)
 
-    expect(screen.getByRole('link', { name: resume.profile.email })).toHaveAttribute(
-      'href',
-      `mailto:${resume.profile.email}`,
-    )
+    expect(container.textContent).not.toContain(resume.profile.email)
+    expect(container.querySelector('a[href^="mailto:"]')).toBeNull()
+    // Not asserting profile.location is absent: roles carry their own
+    // location, and "Atlanta, GA" is legitimately all over the page.
     for (const link of resume.profile.link_lines.flat()) {
-      expect(screen.getByRole('link', { name: link.label })).toHaveAttribute('href', link.url)
+      expect(screen.queryByRole('link', { name: link.label })).toBeNull()
     }
   })
 
