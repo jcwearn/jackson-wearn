@@ -1,0 +1,7 @@
+# Revisions to skip when walking blame. Formatting only — no behaviour changed.
+#
+# GitHub reads this file automatically. Locally:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Format the repo with Prettier (the first run over the whole tree)
+39c5a331cd10486c230407faf8f4dd33cc6ad6ed
