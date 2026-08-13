@@ -51,5 +51,10 @@ jobs:
       - name: Test
         run: npm test
 
+      # SKIP_RESUME_FETCH is deliberate: CI should check the artefact that is
+      # committed, deterministically, rather than depend on github.com being
+      # reachable for something the build does not actually need.
       - name: Build
         run: npm run build
+        env:
+          SKIP_RESUME_FETCH: '1'
