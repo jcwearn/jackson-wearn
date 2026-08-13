@@ -4,12 +4,15 @@ import { resume } from '../content/resume'
 import Resume from './Resume'
 
 describe('Resume', () => {
-  it('offers the PDF as a download', () => {
+  it('opens the PDF in a new tab rather than forcing a download', () => {
     render(<Resume />)
 
-    const link = screen.getByRole('link', { name: /download pdf/i })
+    const link = screen.getByRole('link', { name: /view pdf/i })
     expect(link).toHaveAttribute('href', '/resume.pdf')
-    expect(link).toHaveAttribute('download')
+    expect(link).toHaveAttribute('target', '_blank')
+    expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'))
+    // `download` saves the file with no prompt and no chance to look first.
+    expect(link).not.toHaveAttribute('download')
   })
 
   // The whole point of rendering from JSON: the text is really in the page,

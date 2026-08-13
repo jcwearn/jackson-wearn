@@ -24,12 +24,17 @@ const Resume: React.FC = () => (
   <section className="w-full max-w-2xl mx-auto p-6 text-left">
     <div className="flex flex-wrap items-baseline justify-between gap-3">
       <h2 className="text-2xl font-bold">Resume</h2>
+      {/* Opens the PDF rather than saving it. The `download` attribute puts a
+          file on someone's disk with no prompt and no chance to look first;
+          this hands them the browser's own viewer, where saving is one click
+          away if they want it. */}
       <a
         href={PDF}
-        download
+        target="_blank"
+        rel="noopener noreferrer"
         className="underline underline-offset-4 hover:text-blue-600 dark:hover:text-blue-400"
       >
-        Download PDF
+        View PDF
       </a>
     </div>
 
