@@ -1,17 +1,18 @@
 import React from 'react'
+import { Outlet } from 'react-router'
 import { useDarkMode } from '../hooks/useDarkMode'
 import Footer from './Footer'
 import Header from './Header'
 import ThemeToggle from './ThemeToggle'
 
 /**
- * The page chrome shared by every route: theme toggle, header, footer, and
- * the centred content column.
+ * The page chrome shared by every route: theme toggle, header, nav, footer,
+ * and the centred content column.
  *
- * This is the single caller of useDarkMode. When the router lands, `children`
- * becomes an <Outlet />; nothing else about this component needs to change.
+ * This is the single caller of useDarkMode -- see the note on the hook for
+ * why that matters.
  */
-const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const Layout: React.FC = () => {
   const { dark, toggle } = useDarkMode()
 
   return (
@@ -19,7 +20,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <ThemeToggle darkMode={dark} onToggle={toggle} />
       <Header darkMode={dark} />
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-3xl px-6 mx-auto">
-        {children}
+        <Outlet />
       </div>
       <Footer />
     </div>
