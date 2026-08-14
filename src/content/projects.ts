@@ -74,7 +74,7 @@ export const projects: Project[] = [
     tags: ['React', 'TypeScript', 'Vite', 'Tailwind', 'Cloudflare Pages'],
   },
   {
-    name: 'World clock',
+    name: 'World Clock',
     category: 'sites',
     url: 'https://clock.jacksonwearn.com',
     source: 'https://github.com/jcwearn/world-clock',
@@ -92,7 +92,7 @@ export const projects: Project[] = [
     tags: ['Kubernetes', 'Flux CD', 'Helm', 'SOPS', 'Renovate'],
   },
   {
-    name: 'Home Assistant config',
+    name: 'homeassistant-config',
     category: 'infrastructure',
     source: 'https://github.com/jcwearn/homeassistant-config-public',
     blurb:
@@ -141,7 +141,7 @@ export const projects: Project[] = [
     tags: ['GitHub Actions', 'Bash', 'rsync', 'gitleaks'],
   },
   {
-    name: 'Contact form Worker',
+    name: 'cf-worker-email',
     category: 'tooling',
     source: 'https://github.com/jcwearn/cf-worker-email-public',
     blurb:
