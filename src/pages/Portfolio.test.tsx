@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { projects } from '../content/projects'
+import { categories, projects } from '../content/projects'
 import Portfolio from './Portfolio'
 
 describe('Portfolio', () => {
@@ -48,5 +48,41 @@ describe('Portfolio', () => {
         expect(heading.closest('a')).toBeNull()
       }
     }
+  })
+})
+
+describe('Portfolio grouping', () => {
+  it('renders every category with its heading and description', () => {
+    render(<Portfolio />)
+
+    for (const category of categories) {
+      expect(screen.getByRole('heading', { name: category.label })).toBeInTheDocument()
+      expect(screen.getByText(category.blurb)).toBeInTheDocument()
+    }
+  })
+
+  // The failure worth catching: a filter predicate that puts every project in
+  // the first group. Every card still renders and every heading still appears,
+  // so the page looks right and only the grouping is wrong.
+  it('puts each project inside its own category section', () => {
+    render(<Portfolio />)
+
+    for (const category of categories) {
+      const section = screen.getByRole('heading', { name: category.label }).closest('section')!
+      const expected = projects.filter((p) => p.category === category.id)
+
+      expect(within(section).getAllByRole('article')).toHaveLength(expected.length)
+      for (const project of expected) {
+        expect(within(section).getByText(project.name)).toBeInTheDocument()
+      }
+    }
+  })
+
+  // This sentence was true while the mirrors were being set up and quietly
+  // stopped being true once they were. Asserting its absence is cheap.
+  it('no longer promises more projects are coming', () => {
+    const { container } = render(<Portfolio />)
+
+    expect(container.textContent).not.toMatch(/public snapshots go up/i)
   })
 })
