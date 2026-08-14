@@ -65,7 +65,7 @@ export const projects: Project[] = [
     tags: ['React', 'TypeScript', 'Web Crypto', 'Vite SSG'],
   },
   {
-    name: 'This site',
+    name: 'Jackson Wearn',
     category: 'sites',
     url: 'https://jacksonwearn.com',
     source: 'https://github.com/jcwearn/jackson-wearn',
