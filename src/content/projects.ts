@@ -2,51 +2,133 @@
 // Everything on the portfolio page comes from this file.
 // Edit here, not in Portfolio.tsx.
 //
-// `source` points at a public mirror rather than the repo I work in: the
-// private repo stays canonical and a CI job publishes a filtered snapshot on
-// every merge. Only add an entry once its mirror is public -- a portfolio
-// linking to a 404 is worse than a shorter portfolio.
+// `source` is public source. For most of these that is a snapshot mirror: the
+// private repo stays canonical and a CI job publishes a filtered tree to
+// <name>-public on every merge. A few are simply public repos. Either way, only
+// add an entry once a logged-out visitor can actually open the link -- a
+// portfolio pointing at a 404 is worse than a shorter portfolio.
 // ---------------------------------------------------------------------------
+
+export type Category = 'sites' | 'infrastructure' | 'tooling'
 
 export type Project = {
   name: string
+  category: Category
   /** Live site. Omitted for projects that are not a website. */
   url?: string
-  /** Public source. Every project here has some; the mirror counts. */
+  /** Public source: a mirror for the private repos, the repo itself otherwise. */
   source: string
   blurb: string
   tags: string[]
 }
 
+/**
+ * Declaration order is page order, which is why this is an array and not a map.
+ * Keeping it here rather than in Portfolio.tsx means adding a group is a content
+ * edit like everything else on this page.
+ */
+export const categories: { id: Category; label: string; blurb: string }[] = [
+  {
+    id: 'sites',
+    label: 'Sites',
+    blurb: 'Things you can open and use.',
+  },
+  {
+    id: 'infrastructure',
+    label: 'Homelab & infrastructure',
+    blurb: 'A house and a cluster, both run from a git repo.',
+  },
+  {
+    id: 'tooling',
+    label: 'Developer tooling',
+    blurb: 'Small things built to remove a recurring chore.',
+  },
+]
+
 export const projects: Project[] = [
   {
     name: 'Borderline',
+    category: 'sites',
     url: 'https://borderline.golf',
     source: 'https://github.com/jcwearn/borderline-public',
     blurb:
-      'A daily geography puzzle scored like golf: cross from one country to another in as few as possible, on an unlabelled 3D globe where you buy a country’s name at a price. Sea crossings cost extra, a closed border can invalidate the obvious route, and rough regions cost double instead of blocking. The puzzle is derived from the date and a server-side salt, so nothing is stored and none of it exists before its day.',
-    tags: ['TypeScript', 'React', 'three.js', 'Cloudflare Pages', 'Pages Functions'],
+      'A daily geography puzzle scored like golf: cross from one country to another in as few as possible, on an unlabelled globe where a country’s name costs you. Each day’s puzzle is derived from the date and a server-side salt, so none of it exists before its day.',
+    tags: ['TypeScript', 'React', 'three.js', 'Cloudflare Pages'],
   },
   {
     name: 'Anupama & Jackson',
+    category: 'sites',
     url: 'https://anupamaandjackson.com',
     source: 'https://github.com/jcwearn/anupamaandjackson-public',
     blurb:
-      'A wedding site that gives every guest a different schedule without accounts, sessions or a backend. Each guest’s record is encrypted client-side under a key derived from their own name, and they all ship together in one static index — enter your name and exactly one envelope opens. Prerendered per route with generated Open Graph images, and a nightly job regenerates the index from the guest roster.',
-    tags: ['React', 'TypeScript', 'Vite SSG', 'Web Crypto', 'Cloudflare Pages'],
+      'A wedding site giving every guest a different schedule with no accounts, sessions or backend. Each guest’s record is encrypted under a key derived from their own name and they all ship in one static file, so entering your name opens exactly one envelope.',
+    tags: ['React', 'TypeScript', 'Web Crypto', 'Vite SSG'],
   },
   {
-    name: 'Contact form Worker',
-    source: 'https://github.com/jcwearn/cf-worker-email-public',
+    name: 'This site',
+    category: 'sites',
+    url: 'https://jacksonwearn.com',
+    source: 'https://github.com/jcwearn/jackson-wearn',
     blurb:
-      "The Cloudflare Worker behind this site's contact form. One route: it rate-limits per client IP, checks the request came from an allowed origin, validates and sanitises the payload, and delivers it as mail through Email Routing. No database, no state — the message you send from the home page goes through this.",
-    tags: ['TypeScript', 'Cloudflare Workers', 'Email Routing', 'Wrangler'],
+      'The site you are reading. The resume page renders from the same JSON that builds the PDF, refreshed on a schedule so editing the resume reaches the site without touching this repo.',
+    tags: ['React', 'TypeScript', 'Vite', 'Tailwind', 'Cloudflare Pages'],
+  },
+
+  {
+    name: 'k3s-cluster',
+    category: 'infrastructure',
+    source: 'https://github.com/jcwearn/k3s-cluster-public',
+    blurb:
+      'A three-node k3s cluster running about 25 self-hosted services, where every change is a pull request FluxCD reconciles into the running system. Secrets are SOPS-encrypted in the repo and the topology is substituted in at reconcile time, so the repo itself is portable.',
+    tags: ['Kubernetes', 'Flux CD', 'Helm', 'SOPS', 'Renovate'],
   },
   {
     name: 'Home Assistant config',
+    category: 'infrastructure',
     source: 'https://github.com/jcwearn/homeassistant-config-public',
     blurb:
-      'A house run from a git repo. Every automation, dashboard and package is declarative YAML with no UI-editor state, secrets are SOPS-encrypted in the repo and decrypted at deploy time, and CI runs a real Home Assistant config check in Docker before anything reaches the house.',
-    tags: ['Home Assistant', 'SOPS', 'GitHub Actions', 'Zigbee2MQTT', 'ESPHome'],
+      'A house run from a git repo: every automation and dashboard is declarative YAML with no UI-editor state. CI runs a real Home Assistant config check in Docker before anything reaches the house.',
+    tags: ['Home Assistant', 'SOPS', 'GitHub Actions', 'Zigbee2MQTT'],
+  },
+  {
+    name: 'withjoy-exporter',
+    category: 'infrastructure',
+    source: 'https://github.com/jcwearn/withjoy-exporter',
+    blurb:
+      'WithJoy builds its guest-list export in the browser, so there is no API to call. This drives the real interface in headless Chromium, pivots the tags into one column each, and writes to Google Sheets only when something actually changed.',
+    tags: ['Python', 'Playwright', 'Google Sheets API', 'Kubernetes'],
+  },
+  {
+    name: 'ansible-runner',
+    category: 'infrastructure',
+    source: 'https://github.com/jcwearn/ansible-runner',
+    blurb:
+      'A thirteen-line Ansible image for cluster CronJobs, where the container is the playbook command. Deliberately trivial: the substance is the supply chain around it, with every Action pinned to a commit SHA and a release blocked without a version label.',
+    tags: ['Docker', 'Ansible', 'GitHub Actions', 'GHCR'],
+  },
+
+  {
+    name: 'resume',
+    category: 'tooling',
+    source: 'https://github.com/jcwearn/resume',
+    blurb:
+      'My resume built from YAML through Jinja2 and LaTeX, so adding a job is fifteen lines and never touching TeX. One function feeds both the PDF and the JSON this site renders, so the two cannot disagree about what it says.',
+    tags: ['Python', 'Jinja2', 'LaTeX', 'Make', 'GitHub Actions'],
+  },
+  {
+    name: 'workflows',
+    category: 'tooling',
+    source: 'https://github.com/jcwearn/workflows',
+    blurb:
+      'The reusable Action that publishes private repos as public snapshots. It syncs a filtered file tree and never commits or refs, because GitHub serves closed pull request refs forever — so a repo that once had a secret on a branch can never safely be made public.',
+    tags: ['GitHub Actions', 'Bash', 'rsync', 'gitleaks'],
+  },
+  {
+    name: 'Contact form Worker',
+    category: 'tooling',
+    source: 'https://github.com/jcwearn/cf-worker-email-public',
+    blurb:
+      'The Worker behind this site’s contact form. It rate-limits per client address, checks the origin, validates the payload and delivers it as mail through Email Routing. No database and no state — the message you send from the home page goes through this.',
+    tags: ['TypeScript', 'Cloudflare Workers', 'Email Routing'],
   },
 ]

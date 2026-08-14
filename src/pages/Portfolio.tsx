@@ -1,19 +1,36 @@
 import React from 'react'
 import ProjectCard from '../components/ProjectCard'
-import { projects } from '../content/projects'
+import { categories, projects } from '../content/projects'
 
+// No max-w here: the page uses the width Layout already gives it, which is what
+// leaves room for two columns. Every other page sets its own narrower max-w, so
+// widening the shared container would have been a bigger change than this needs.
 const Portfolio: React.FC = () => (
-  <section className="w-full max-w-2xl mx-auto p-6">
+  <section className="w-full p-6">
     <h2 className="text-2xl font-bold">Portfolio</h2>
-    <p className="mt-2 text-gray-700 dark:text-gray-300">
-      Things I&apos;ve built outside work. More are being published as their public snapshots go up.
-    </p>
+    <p className="mt-2 text-gray-700 dark:text-gray-300">Things I&apos;ve built outside work.</p>
 
-    <div className="mt-6 flex flex-col gap-6">
-      {projects.map((project) => (
-        <ProjectCard key={project.source} project={project} />
-      ))}
-    </div>
+    {categories.map((category) => {
+      const inGroup = projects.filter((project) => project.category === category.id)
+
+      return (
+        <section key={category.id} className="mt-10" aria-labelledby={`group-${category.id}`}>
+          <h3
+            id={`group-${category.id}`}
+            className="border-b border-gray-300 pb-1 text-sm font-bold tracking-widest uppercase dark:border-gray-700"
+          >
+            {category.label}
+          </h3>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{category.blurb}</p>
+
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {inGroup.map((project) => (
+              <ProjectCard key={project.source} project={project} />
+            ))}
+          </div>
+        </section>
+      )
+    })}
   </section>
 )
 
