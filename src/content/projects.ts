@@ -73,6 +73,15 @@ export const projects: Project[] = [
       'The site you are reading. The resume page renders from the same JSON that builds the PDF, refreshed on a schedule so editing the resume reaches the site without touching this repo.',
     tags: ['React', 'TypeScript', 'Vite', 'Tailwind', 'Cloudflare Pages'],
   },
+  {
+    name: 'World clock',
+    category: 'sites',
+    url: 'https://clock.jacksonwearn.com',
+    source: 'https://github.com/jcwearn/world-clock',
+    blurb:
+      'Digital clocks for the timezones I care about, where editing any one of them pins a hypothetical moment and converts it across all the others — for questions like “if it’s 7pm Eastern, what time is it in India?”. One build, two deploy targets: a container image served by unprivileged nginx, and Cloudflare Pages.',
+    tags: ['React', 'TypeScript', 'Luxon', 'shadcn/ui', 'Docker'],
+  },
 
   {
     name: 'k3s-cluster',
