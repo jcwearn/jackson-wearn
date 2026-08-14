@@ -80,9 +80,10 @@ fallback, so deep links would work in `vite dev` and 404 in production.
 The consequence of relying on the fallback is that unknown paths render the app's not-found page with
 a 200 rather than a 404. That is the trade for client-side routing on Pages without a redirects file.
 
-The contact form posts to `/form-submit`, a separate Cloudflare Worker (`jcwearn/cf-worker-email`,
-not yet published). It is not part of this build; rolling it in would mean moving off Pages, which
-does not support the email-sending or rate-limiting bindings that Worker uses.
+The contact form posts to `/form-submit`, a separate Cloudflare Worker
+([`cf-worker-email-public`](https://github.com/jcwearn/cf-worker-email-public)). It is not part of
+this build; rolling it in would mean moving off Pages, which does not support the email-sending or
+rate-limiting bindings that Worker uses.
 
 ## Notes on the toolchain
 
