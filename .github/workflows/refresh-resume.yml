@@ -52,7 +52,17 @@ jobs:
       - name: Fetch
         run: npm run resume:fetch
 
+      # Commits land as me, SSH-signed, so a refresh reads the same as any other
+      # commit on main instead of an unsigned bot row.
+      #
+      # COMMIT_SIGNING_KEY is the account-wide signing key -- the same one the
+      # private repos hold as PUBLIC_SYNC_SIGNING_KEY, under a name that means
+      # something here, since this repo has no public-sync workflow. Its public
+      # half is registered on the account as a Signing key; an Authentication
+      # key would push fine and simply never verify.
       - name: Commit if changed
+        env:
+          SIGNING_KEY: ${{ secrets.COMMIT_SIGNING_KEY }}
         run: |
           set -euo pipefail
           if git diff --quiet -- src/content/resume.json public/resume.pdf; then
@@ -60,12 +70,48 @@ jobs:
             exit 0
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # No unsigned fallback: quietly pushing unsigned is the thing this is
+          # here to stop, so an absent key is an error rather than a downgrade.
+          if [ -z "$SIGNING_KEY" ]; then
+            echo "::error::COMMIT_SIGNING_KEY is empty -- refusing to push unsigned."
+            exit 1
+          fi
+
+          # Mode before contents, so the key is never briefly world-readable.
+          # RUNNER_TEMP rather than the working directory: the repo is checked
+          # out at the workspace root, and a private key inside the tree is one
+          # stray `git add -A` away from being committed.
+          install -m 600 /dev/null "$RUNNER_TEMP/signing-key"
+          printf '%s\n' "$SIGNING_KEY" > "$RUNNER_TEMP/signing-key"
+
+          git config gpg.format ssh
+          git config user.signingkey "$RUNNER_TEMP/signing-key"
+          git config commit.gpgsign true
+
+          # Author and committer both, byte-identical: GitHub matches the
+          # signature to the account by committer email, and collapses the two
+          # into one line on the commit list only when the strings match.
+          git config user.name "Jackson Wearn"
+          git config user.email "jcwearn@users.noreply.github.com"
+
           git add src/content/resume.json public/resume.pdf
           git commit -m "chore: refresh resume from jcwearn/resume"
+
+          # Not `git verify-commit`: verifying an SSH signature locally needs a
+          # gpg.ssh.allowedSignersFile the runner does not have, so it would
+          # fail on a perfectly good signature. Checking the header attached is
+          # what can be established here; GitHub verifies it server-side.
+          if ! git cat-file commit HEAD | grep -q '^gpgsig'; then
+            echo "::error::Signing was configured but HEAD carries no signature."
+            exit 1
+          fi
+
           git push
-          echo "Pushed a refreshed resume; Pages will rebuild."
+          echo "Pushed a signed, refreshed resume; Pages will rebuild."
+
+      - name: Remove signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/signing-key"
 
       # Cheap insurance against publishing something unreadable. The fetch
       # script already rejects a non-PDF and a JSON that does not parse, but
