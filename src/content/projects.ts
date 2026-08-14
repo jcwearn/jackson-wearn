@@ -20,6 +20,13 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    name: 'Contact form Worker',
+    source: 'https://github.com/jcwearn/cf-worker-email-public',
+    blurb:
+      "The Cloudflare Worker behind this site's contact form. One route: it rate-limits per client IP, checks the request came from an allowed origin, validates and sanitises the payload, and delivers it as mail through Email Routing. No database, no state — the message you send from the home page goes through this.",
+    tags: ['TypeScript', 'Cloudflare Workers', 'Email Routing', 'Wrangler'],
+  },
+  {
     name: 'Home Assistant config',
     source: 'https://github.com/jcwearn/homeassistant-config-public',
     blurb:
