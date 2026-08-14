@@ -1,0 +1,83 @@
+name: Refresh resume
+
+# The resume lives in jcwearn/resume, which rebuilds out/ on every merge there.
+# Nothing about that reaches this repo on its own: scripts/fetch-resume.ts runs
+# as prebuild, and prebuild only runs when Cloudflare Pages builds, which only
+# happens when this repo gets a commit. So editing the resume and not touching
+# this repo for a month left the site showing a month-old resume.
+#
+# This closes that gap by polling. Polling rather than a repository_dispatch
+# from the resume repo, deliberately: dispatch needs a cross-repo token that
+# expires, and its failure mode is silence -- exactly the staleness this exists
+# to prevent. A schedule needs no credentials at all, because the resume repo is
+# public and this reads a plain raw URL.
+
+on:
+  schedule:
+    # 06:20 UTC. Off the hour because scheduled runs cluster there and get
+    # delayed; the exact minute does not matter for a daily resume check.
+    - cron: '20 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refresh-resume
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Fetch the resume and commit any change
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      # The repo default is read-only; this job needs to push the refreshed
+      # files. That push is what triggers the Pages rebuild.
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+
+      # The script writes only when the bytes actually differ, and never fails
+      # the run -- an unreachable GitHub leaves the committed copies in place.
+      - name: Fetch
+        run: npm run resume:fetch
+
+      - name: Commit if changed
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- src/content/resume.json public/resume.pdf; then
+            echo "Resume already matches upstream; nothing to do."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/content/resume.json public/resume.pdf
+          git commit -m "chore: refresh resume from jcwearn/resume"
+          git push
+          echo "Pushed a refreshed resume; Pages will rebuild."
+
+      # Cheap insurance against publishing something unreadable. The fetch
+      # script already rejects a non-PDF and a JSON that does not parse, but
+      # this asserts the committed pair is coherent after the fact rather than
+      # trusting the thing that just wrote them.
+      - name: Verify what was committed
+        run: |
+          set -euo pipefail
+          head -c 5 public/resume.pdf | grep -q '%PDF-'
+          node -e "
+            const r = require('./src/content/resume.json');
+            if (!r.profile?.name) throw new Error('resume.json has no profile.name');
+            if (!Array.isArray(r.experience) || !r.experience.length) throw new Error('resume.json has no experience');
+            console.log('resume.json looks sane:', r.experience.length, 'roles');
+          "
