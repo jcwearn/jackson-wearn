@@ -91,6 +91,14 @@ export const projects: Project[] = [
     tags: ['Home Assistant', 'SOPS', 'GitHub Actions', 'Zigbee2MQTT'],
   },
   {
+    name: 'udm-pro',
+    category: 'infrastructure',
+    source: 'https://github.com/jcwearn/udm-pro',
+    blurb:
+      'A UniFi Dream Machine Pro doing its own 802.1X on AT&T fiber, so the ISP gateway can be removed entirely. Every firmware upgrade used to delete the supplicant and drop the WAN — leaving no internet to reinstall it with — so the box now rebuilds it from persistent storage on boot, verified against a real upgrade and a destructive test.',
+    tags: ['Bash', 'systemd', 'wpa_supplicant', 'SOPS', 'UniFi OS'],
+  },
+  {
     name: 'withjoy-exporter',
     category: 'infrastructure',
     source: 'https://github.com/jcwearn/withjoy-exporter',
