@@ -1,60 +1,45 @@
 name: CI
 
+# Calls the shared Node CI workflow in jcwearn/workflows, replacing a local
+# copy of the same six steps that three other repos also carry. The step order
+# and the reasoning behind it moved there unchanged -- including why typecheck
+# runs even though the build's own `tsc -b` would catch the same errors.
+#
+# The contract that file relies on is already satisfied here: .node-version is
+# pinned exact, package-lock.json is committed, and package.json declares
+# format:check, lint, typecheck, test, and build. CI additionally gains a
+# lockfile-drift check this repo never had, which catches what `npm ci` cannot:
+# a lockfile that satisfies package.json but is not what `npm install` writes.
+#
+# The local `concurrency:` block is deliberately gone rather than moved up: the
+# shared workflow declares its own, and two groups for one logical run means
+# the outer one holds a slot while the inner one queues behind it.
+
 on:
   push:
     branches: [main]
   pull_request:
   workflow_dispatch:
 
-permissions:
-  contents: read
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  # Superseded pull request runs are noise. Every commit on main gets checked,
-  # because nothing else is watching it.
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-
 jobs:
-  check:
-    name: Format, lint, typecheck, build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      # Reads .node-version, which is pinned exact so a new 24.x release
-      # cannot change what CI runs without a commit saying so.
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version-file: '.node-version'
-          cache: 'npm'
-
-      # Also the lockfile check: npm ci refuses to run if package.json and
-      # package-lock.json disagree.
-      - name: Install
-        run: npm ci
-
-      - name: Format
-        run: npm run format:check
-
-      - name: Lint
-        run: npm run lint
-
-      # Redundant with the build's own `tsc -b`, but near-free once the build
-      # info is warm, and a type error reads as a type error rather than as a
-      # failed build.
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Test
-        run: npm test
-
-      # SKIP_RESUME_FETCH is deliberate: CI should check the artefact that is
-      # committed, deterministically, rather than depend on github.com being
-      # reachable for something the build does not actually need.
-      - name: Build
-        run: npm run build
-        env:
-          SKIP_RESUME_FETCH: '1'
+  ci:
+    # Explicit even though `read` is all node-ci needs and all this account
+    # grants by default. A reusable workflow can only narrow what the caller
+    # granted, so the grant belongs here where it is visible.
+    permissions:
+      contents: read
+    # Renovate pins this to a digest on its next run, leaving `# v1` behind as
+    # the record of what to follow. Written as `@v1` with no trailing comment;
+    # the comment belongs on a digest, where it records which tag it came from.
+    uses: jcwearn/workflows/.github/workflows/node-ci.yaml@v1
+    with:
+      # CI checks the artefact that is committed, deterministically, rather
+      # than depending on github.com being reachable for something the build
+      # does not actually need.
+      #
+      # This cannot be inferred from the environment, which is why the shared
+      # workflow takes it as an input at all. GITHUB_ACTIONS is true for
+      # refresh-resume.yml too, which runs the same script and MUST fetch; and
+      # CI is true on Cloudflare Pages, which also must fetch. Only the caller
+      # knows which of the two situations this is.
+      extra-env: SKIP_RESUME_FETCH=1
