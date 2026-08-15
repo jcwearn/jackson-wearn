@@ -1,0 +1,20 @@
+# Cache-Control for the share card, and nothing else.
+#
+# The card is not fingerprinted the way /assets/* is, and scrapers cache hard.
+# A day is long enough to be free and short enough that replacing the card
+# actually lands.
+#
+# Deliberately no /assets/* rule here, and no `immutable`. _headers matches by
+# request path, so an immutable rule would stamp a year onto the reply for an
+# asset that is not there -- and this site answers an unmatched path with
+# index.html and a 200, by design (see the deployment notes in README.md). The
+# edge would then serve cached HTML under a JavaScript filename for a year. The
+# sibling `borderline` repo can carry that rule because it ships a 404.html,
+# which turns a missing asset back into a 404; this repo must never have one,
+# because that same file is what would disable the fallback /portfolio and
+# /resume rely on.
+#
+# This file is not _redirects. It decorates responses after routing and does not
+# affect matching, which is why it is safe here at all.
+/og.png
+  Cache-Control: public, max-age=86400

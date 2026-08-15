@@ -33,6 +33,15 @@ every link Vite-template blue, including nav links, with no obvious cause. Style
 `format:check` fails in between. Content changes go in the resume repo's YAML, which also produces
 the PDF.
 
+**`public/og.png` is generated and committed.** `npm run og:build` renders it with the local Chrome;
+`npm run build` does not, because the Cloudflare builder has no Chrome. Change `public/profile.jpg`,
+or the `<h1>` or role line in `Header.tsx`, and the card silently disagrees with the site until
+someone reruns it. `src/og.test.ts` catches a missing or wrong-sized file, not a stale one.
+
+**A test outside `src/` does not run.** `vitest.config.ts` sets `include: ['src/**/*.test.{ts,tsx}']`,
+so `scripts/build-og.test.ts` would be collected by nothing and pass forever by never running. That
+is why the share-card test lives at `src/og.test.ts` with no `src/og.ts` beside it.
+
 **`.npmrc` sets `legacy-peer-deps=true`.** Peer dependencies are not installed automatically, so a
 package that declares peers needs them listed explicitly.
 
