@@ -9,7 +9,7 @@
 // portfolio pointing at a 404 is worse than a shorter portfolio.
 // ---------------------------------------------------------------------------
 
-export type Category = 'sites' | 'infrastructure' | 'tooling'
+export type Category = 'sites' | 'games' | 'infrastructure' | 'tooling'
 
 export type Project = {
   name: string
@@ -34,6 +34,11 @@ export const categories: { id: Category; label: string; blurb: string }[] = [
     blurb: 'Things you can open and use.',
   },
   {
+    id: 'games',
+    label: 'Games',
+    blurb: 'Things you can play. One is solo and daily; the other needs a room full of phones.',
+  },
+  {
     id: 'infrastructure',
     label: 'Homelab & infrastructure',
     blurb: 'A house and a cluster, both run from a git repo.',
@@ -46,15 +51,6 @@ export const categories: { id: Category; label: string; blurb: string }[] = [
 ]
 
 export const projects: Project[] = [
-  {
-    name: 'Borderline',
-    category: 'sites',
-    url: 'https://borderline.golf',
-    source: 'https://github.com/jcwearn/borderline-public',
-    blurb:
-      'A daily geography puzzle scored like golf: cross from one country to another in as few as possible, on an unlabelled globe where a country’s name costs you. Each day’s puzzle is derived from the date and a server-side salt, so none of it exists before its day.',
-    tags: ['TypeScript', 'React', 'three.js', 'Cloudflare Pages'],
-  },
   {
     name: 'Anupama & Jackson',
     category: 'sites',
@@ -81,6 +77,25 @@ export const projects: Project[] = [
     blurb:
       'Digital clocks for the timezones I care about, where editing any one of them pins a hypothetical moment and converts it across all the others — for questions like “if it’s 7pm Eastern, what time is it in India?”. One build, two deploy targets: a container image served by unprivileged nginx, and Cloudflare Pages.',
     tags: ['React', 'TypeScript', 'Luxon', 'shadcn/ui', 'Docker'],
+  },
+
+  {
+    name: 'Borderline',
+    category: 'games',
+    url: 'https://borderline.golf',
+    source: 'https://github.com/jcwearn/borderline-public',
+    blurb:
+      'A daily geography puzzle scored like golf: cross from one country to another in as few as possible, on an unlabelled globe where a country’s name costs you. Each day’s puzzle is derived from the date and a server-side salt, so none of it exists before its day.',
+    tags: ['TypeScript', 'React', 'three.js', 'Cloudflare Pages'],
+  },
+  {
+    name: 'Hivemind',
+    category: 'games',
+    url: 'https://hivemind.jacksonwearn.com',
+    source: 'https://github.com/jcwearn/hivemind',
+    blurb:
+      'A Jackbox-style party game where one snake is steered by the whole room: the board goes on a television, phones join by QR code, and every tick the server tallies the votes and the plurality direction wins. Go, htmx and server-sent events — no WebSocket, no database, and a room’s entire state owned by a single goroutine rather than a mutex.',
+    tags: ['Go', 'htmx', 'SSE', 'templ', 'Cloudflare Containers'],
   },
 
   {
@@ -120,7 +135,7 @@ export const projects: Project[] = [
     category: 'infrastructure',
     source: 'https://github.com/jcwearn/ansible-runner',
     blurb:
-      'A thirteen-line Ansible image for cluster CronJobs, where the container is the playbook command. Deliberately trivial: the substance is the supply chain around it, with every Action pinned to a commit SHA and a release blocked without a version label.',
+      'A thirteen-line Ansible image for cluster CronJobs, where the container is the playbook command. Deliberately trivial, and deliberately not special: it builds, releases and publishes through the same shared workflows every other repo here uses, which is the whole point of having them.',
     tags: ['Docker', 'Ansible', 'GitHub Actions', 'GHCR'],
   },
 
@@ -137,7 +152,7 @@ export const projects: Project[] = [
     category: 'tooling',
     source: 'https://github.com/jcwearn/workflows',
     blurb:
-      'The reusable Action that publishes private repos as public snapshots. It syncs a filtered file tree and never commits or refs, because GitHub serves closed pull request refs forever — so a repo that once had a secret on a branch can never safely be made public.',
+      'The shared CI and release pipeline behind most of these repos: Go, Node, Python and Docker builds, label-driven semver, and the job that publishes a private repo as a public snapshot. That last one syncs a file tree and never commits or refs, because GitHub serves closed pull request refs forever — so a repo that once had a secret on a branch can never safely be made public.',
     tags: ['GitHub Actions', 'Bash', 'rsync', 'gitleaks'],
   },
   {

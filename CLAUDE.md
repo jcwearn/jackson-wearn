@@ -61,9 +61,12 @@ because a squash merge rewrites the SHA a same-PR entry would have recorded.
 
 ## Portfolio links
 
-`projects.ts` entries link to `-public` mirrors, not the private repos those projects are developed
-in. A test enforces the suffix, because linking the private repo reads as correct in review and 404s
-for every visitor. Only add a project once its mirror is actually public.
+Some `projects.ts` entries are private repos published as `-public` snapshot mirrors; others are
+simply public repos and have no suffix. The test does not require the suffix — it holds a `MIRRORED`
+allowlist and fails only when an entry links the private original of a repo that has a mirror. That
+is the case worth catching: a private repo returns 200 to its owner, so the link reads as correct in
+review and 404s for every visitor. Add a repo to that list when you give it a mirror, and only add a
+project here once a logged-out visitor can open the link.
 
 ## The contact form
 
