@@ -22,13 +22,13 @@
         }
       ]
     ],
-    "summary": "Backend engineer with 10+ years building and operating high-scale APIs and distributed systems across marketing, logistics, and live broadcast. Comfortable owning a feature end to end \u2014 from data model and API design through rollout, monitoring, and incident response \u2014 with working depth in fullstack delivery and Kubernetes-based infrastructure."
+    "summary": "Backend engineer with 10+ years building and operating high-scale APIs and distributed systems across marketing, logistics, and live broadcast. Comfortable owning a feature end to end — from data model and API design through rollout, monitoring, and incident response — with working depth in fullstack delivery and Kubernetes-based infrastructure."
   },
   "experience": [
     {
       "company": "Intuit Mailchimp",
       "title": "Senior Software Engineer",
-      "subtitle": "Mobile Backend \u00b7 Landing Pages & Surveys \u00b7 Email 2",
+      "subtitle": "Mobile Backend · Landing Pages & Surveys · Email 2",
       "location": "Atlanta, GA",
       "start": "2024-06",
       "end": "2026-07",
@@ -44,7 +44,7 @@
           "priority": 1
         },
         {
-          "text": "Modernized the file import pipeline with XLSX support, server-side file-size enforcement on cloud-stored uploads, and a new PATCH endpoint \u2014 shipped behind feature flags with fallback to the legacy flow for zero-disruption rollout.",
+          "text": "Modernized the file import pipeline with XLSX support, server-side file-size enforcement on cloud-stored uploads, and a new PATCH endpoint — shipped behind feature flags with fallback to the legacy flow for zero-disruption rollout.",
           "tags": [
             "backend",
             "api"
@@ -62,7 +62,7 @@
           "priority": 1
         },
         {
-          "text": "Expanded Playwright end-to-end coverage across critical account-management flows \u2014 signup, forgot username, and forgot password \u2014 and fixed IP-throttling middleware that caused intermittent 429s, stabilizing a chronically flaky test pipeline.",
+          "text": "Expanded Playwright end-to-end coverage across critical account-management flows — signup, forgot username, and forgot password — and fixed IP-throttling middleware that caused intermittent 429s, stabilizing a chronically flaky test pipeline.",
           "tags": [
             "backend",
             "testing"
@@ -79,7 +79,7 @@
           "priority": 1
         },
         {
-          "text": "Took ownership of an under-maintained internal service, adding logging, alerting, and documentation, and authored migration specifications for two services moving onto Intuit's internal service platform \u2014 including standing up the team's project, local development environment, and demo resources.",
+          "text": "Took ownership of an under-maintained internal service, adding logging, alerting, and documentation, and authored migration specifications for two services moving onto Intuit's internal service platform — including standing up the team's project, local development environment, and demo resources.",
           "tags": [
             "backend",
             "devops",
@@ -107,7 +107,7 @@
           "priority": 2
         }
       ],
-      "dates": "Jun 2024 \u2013 Jul 2026"
+      "dates": "Jun 2024 – Jul 2026"
     },
     {
       "company": "Roadie",
@@ -143,7 +143,7 @@
           "priority": 1
         },
         {
-          "text": "Contributed to \u201chasty\u201d, an internal Go package and template that gave the team a fast path to scaffolding new services.",
+          "text": "Contributed to “hasty”, an internal Go package and template that gave the team a fast path to scaffolding new services.",
           "tags": [
             "backend"
           ],
@@ -157,7 +157,7 @@
           "priority": 2
         }
       ],
-      "dates": "Sep 2022 \u2013 May 2024"
+      "dates": "Sep 2022 – May 2024"
     },
     {
       "company": "Terminus",
@@ -200,12 +200,12 @@
           "priority": 2
         }
       ],
-      "dates": "Jul 2021 \u2013 Aug 2022"
+      "dates": "Jul 2021 – Aug 2022"
     },
     {
       "company": "CNN",
       "title": "Senior Software Engineer",
-      "subtitle": "Elections \u00b7 Lego",
+      "subtitle": "Elections · Lego",
       "location": "Atlanta, GA",
       "start": "2017-12",
       "end": "2021-07",
@@ -252,12 +252,12 @@
           "priority": 2
         }
       ],
-      "dates": "Dec 2017 \u2013 Jul 2021"
+      "dates": "Dec 2017 – Jul 2021"
     },
     {
       "company": "CareerBuilder",
-      "title": "Software Engineer I\u2013II",
-      "subtitle": "Job UX & Services \u00b7 Consumer Intelligence",
+      "title": "Software Engineer I–II",
+      "subtitle": "Job UX & Services · Consumer Intelligence",
       "location": "Norcross, GA",
       "start": "2016-01",
       "end": "2017-12",
@@ -291,7 +291,7 @@
           "priority": 2
         }
       ],
-      "dates": "Jan 2016 \u2013 Dec 2017"
+      "dates": "Jan 2016 – Dec 2017"
     }
   ],
   "projects": {
@@ -301,7 +301,7 @@
     "max_bullets": 3,
     "bullets": [
       {
-        "text": "Operate a 3-node high-availability k3s cluster running roughly 25 self-hosted services, managed entirely through GitOps \u2014 every change is a pull request that FluxCD reconciles to cluster state.",
+        "text": "Operate a 3-node high-availability k3s cluster running roughly 25 self-hosted services, managed entirely through GitOps — every change is a pull request that FluxCD reconciles to cluster state.",
         "tags": [
           "devops",
           "k8s"
@@ -360,7 +360,7 @@
     "entries": [
       {
         "degree": "B.Sc. Computer Science, University of Georgia",
-        "detail": "2011\u20132015"
+        "detail": "2011–2015"
       }
     ]
   }
