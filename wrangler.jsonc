@@ -1,0 +1,10 @@
+{
+  // Project name and repo name happen to match here, unlike borderline
+  // (borderline-golf) and priceatronic2 (priceatronic). Still worth stating
+  // explicitly: `wrangler pages deploy` CREATES a project that does not exist
+  // rather than failing, so a wrong value here is a second empty project and a
+  // site that silently stops updating.
+  "name": "jackson-wearn",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-08-19",
+}
