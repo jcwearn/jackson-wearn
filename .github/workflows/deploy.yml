@@ -1,0 +1,35 @@
+name: Deploy
+
+# Deploys to Cloudflare Pages with this repo's own scoped API token, replacing
+# Cloudflare's dashboard Git integration.
+#
+# Triggers on push to ANY branch, which is what the Git integration did: a
+# branch pushed without a PR still got a preview. --branch decides the rest.
+#
+# Deliberately does NOT set SKIP_RESUME_FETCH, which ci.yml does. That flag
+# exists because `prebuild` runs scripts/fetch-resume.ts and CI has no reason to
+# hit the network, while the DEPLOY build must fetch -- the resume it pulls is
+# what ends up on the site. Cloudflare Pages fetched for exactly this reason,
+# and node-ci.yaml's comment records why CI=true could not be used to tell the
+# two apart: Pages sets it too.
+#
+# refresh-resume.yml deploys separately after its nightly commit. It has to: a
+# push made with the default GITHUB_TOKEN does not trigger `on: push`, so
+# nothing here would ever run for it.
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  deploy:
+    uses: jcwearn/workflows/.github/workflows/cloudflare-pages-deploy.yaml@v1
+    with:
+      project-name: jackson-wearn
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
