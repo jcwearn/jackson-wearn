@@ -34,11 +34,26 @@ describe('projects', () => {
   ]
 
   it.each(projects.map((p) => [p.name, p] as const))('%s links to public source', (_n, project) => {
+    if (project.source === undefined) return
+
     const match = /^https:\/\/github\.com\/jcwearn\/([\w.-]+)$/.exec(project.source)
     expect(match, `${project.source} is not a github.com/jcwearn repo URL`).not.toBeNull()
 
     const repo = match![1]
     expect(MIRRORED, `${repo} is mirrored; link ${repo}-public instead`).not.toContain(repo)
+  })
+
+  // The card renders a "Private repo" chip in place of the link. Asserting the
+  // pairing both ways is what stops a link left off by accident from looking
+  // like a deliberate one -- the rendered result is identical either way.
+  it.each(projects.map((p) => [p.name, p] as const))('%s is private or linked', (_n, project) => {
+    if (project.source === undefined) {
+      expect(project.private, 'has no source, so it must set private: true').toBe(true)
+    } else {
+      expect(project.private, 'has a public source, so it must not claim to be private').not.toBe(
+        true,
+      )
+    }
   })
 
   it.each(projects.map((p) => [p.name, p] as const))('%s has a valid live url', (_n, project) => {
@@ -47,9 +62,24 @@ describe('projects', () => {
     }
   })
 
-  // source doubles as the React key on the portfolio page.
-  it('has a unique source per project', () => {
-    const sources = projects.map((p) => p.source)
+  // slug is the React key on the portfolio page and the case study URL.
+  it('has a unique slug per project', () => {
+    const slugs = projects.map((p) => p.slug)
+    expect(new Set(slugs).size).toBe(slugs.length)
+  })
+
+  it.each(projects.map((p) => [p.name, p] as const))('%s has a url-safe slug', (_n, project) => {
+    expect(project.slug).toMatch(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+  })
+
+  // /portfolio/system is the system map. A project claiming that slug would be
+  // shadowed by it and become unreachable, with nothing else going wrong.
+  it('leaves the reserved slugs alone', () => {
+    expect(projects.map((p) => p.slug)).not.toContain('system')
+  })
+
+  it('has a unique source where there is one', () => {
+    const sources = projects.map((p) => p.source).filter((source) => source !== undefined)
     expect(new Set(sources).size).toBe(sources.length)
   })
 
