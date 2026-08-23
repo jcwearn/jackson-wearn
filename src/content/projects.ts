@@ -7,17 +7,25 @@
 // <name>-public on every merge. A few are simply public repos. Either way, only
 // add an entry once a logged-out visitor can actually open the link -- a
 // portfolio pointing at a 404 is worse than a shorter portfolio.
+//
+// A project with no public source at all sets `private: true` and omits
+// `source`. That pairing is asserted both ways in the test, so a link left off
+// by accident fails rather than rendering a card that quietly has nowhere to go.
 // ---------------------------------------------------------------------------
 
 export type Category = 'sites' | 'games' | 'infrastructure' | 'tooling'
 
 export type Project = {
+  /** URL segment for the case study, and the React key on the portfolio page. */
+  slug: string
   name: string
   category: Category
   /** Live site. Omitted for projects that are not a website. */
   url?: string
   /** Public source: a mirror for the private repos, the repo itself otherwise. */
-  source: string
+  source?: string
+  /** True exactly when there is no public source to link. Never both. */
+  private?: boolean
   blurb: string
   tags: string[]
 }
@@ -52,6 +60,7 @@ export const categories: { id: Category; label: string; blurb: string }[] = [
 
 export const projects: Project[] = [
   {
+    slug: 'anupamaandjackson',
     name: 'Anupama & Jackson',
     category: 'sites',
     url: 'https://anupamaandjackson.com',
@@ -61,6 +70,7 @@ export const projects: Project[] = [
     tags: ['React', 'TypeScript', 'Web Crypto', 'Vite SSG'],
   },
   {
+    slug: 'jackson-wearn',
     name: 'Jackson Wearn',
     category: 'sites',
     url: 'https://jacksonwearn.com',
@@ -70,6 +80,7 @@ export const projects: Project[] = [
     tags: ['React', 'TypeScript', 'Vite', 'Tailwind', 'Cloudflare Pages'],
   },
   {
+    slug: 'world-clock',
     name: 'World Clock',
     category: 'sites',
     url: 'https://clock.jacksonwearn.com',
@@ -80,6 +91,7 @@ export const projects: Project[] = [
   },
 
   {
+    slug: 'borderline',
     name: 'Borderline',
     category: 'games',
     url: 'https://borderline.golf',
@@ -89,6 +101,7 @@ export const projects: Project[] = [
     tags: ['TypeScript', 'React', 'three.js', 'Cloudflare Pages'],
   },
   {
+    slug: 'hivemind',
     name: 'Hivemind',
     category: 'games',
     url: 'https://hivemind.jacksonwearn.com',
@@ -99,6 +112,7 @@ export const projects: Project[] = [
   },
 
   {
+    slug: 'k3s-cluster',
     name: 'k3s-cluster',
     category: 'infrastructure',
     source: 'https://github.com/jcwearn/k3s-cluster-public',
@@ -107,6 +121,25 @@ export const projects: Project[] = [
     tags: ['Kubernetes', 'Flux CD', 'Helm', 'SOPS', 'Renovate'],
   },
   {
+    slug: 'cloudflare-infra',
+    name: 'cloudflare-infra',
+    private: true,
+    category: 'infrastructure',
+    blurb:
+      'The Cloudflare account as OpenTofu: zones, DNS, Pages projects, Workers boundaries, edge rules and the API tokens the app repos deploy with. Every change is a plan on the pull request and an apply on merge, with a nightly job that checks the account has not drifted away from the repo behind its back.',
+    tags: ['OpenTofu', 'Cloudflare', 'GitHub Actions', 'SOPS', 'R2'],
+  },
+  {
+    slug: 'truenas-infra',
+    name: 'truenas-infra',
+    private: true,
+    category: 'infrastructure',
+    blurb:
+      'The NAS as OpenTofu: ZFS datasets, NFS exports, snapshot schedules and the monitoring grants the cluster scrapes through. It exists because a Prometheus migration ended on a prerequisite that could not be reviewed or rolled back — “create the dataset and the share by hand before merging” — and that step now lives in a diff.',
+    tags: ['OpenTofu', 'TrueNAS', 'ZFS', 'NFS', 'GitHub Actions'],
+  },
+  {
+    slug: 'homeassistant-config',
     name: 'homeassistant-config',
     category: 'infrastructure',
     source: 'https://github.com/jcwearn/homeassistant-config-public',
@@ -115,6 +148,7 @@ export const projects: Project[] = [
     tags: ['Home Assistant', 'SOPS', 'GitHub Actions', 'Zigbee2MQTT'],
   },
   {
+    slug: 'udm-pro',
     name: 'udm-pro',
     category: 'infrastructure',
     source: 'https://github.com/jcwearn/udm-pro',
@@ -123,6 +157,7 @@ export const projects: Project[] = [
     tags: ['Bash', 'systemd', 'wpa_supplicant', 'SOPS', 'UniFi OS'],
   },
   {
+    slug: 'withjoy-exporter',
     name: 'withjoy-exporter',
     category: 'infrastructure',
     source: 'https://github.com/jcwearn/withjoy-exporter',
@@ -130,16 +165,9 @@ export const projects: Project[] = [
       'WithJoy builds its guest-list export in the browser, so there is no API to call. This drives the real interface in headless Chromium, pivots the tags into one column each, and writes to Google Sheets only when something actually changed.',
     tags: ['Python', 'Playwright', 'Google Sheets API', 'Kubernetes'],
   },
-  {
-    name: 'ansible-runner',
-    category: 'infrastructure',
-    source: 'https://github.com/jcwearn/ansible-runner',
-    blurb:
-      'A thirteen-line Ansible image for cluster CronJobs, where the container is the playbook command. Deliberately trivial, and deliberately not special: it builds, releases and publishes through the same shared workflows every other repo here uses, which is the whole point of having them.',
-    tags: ['Docker', 'Ansible', 'GitHub Actions', 'GHCR'],
-  },
 
   {
+    slug: 'resume',
     name: 'resume',
     category: 'tooling',
     source: 'https://github.com/jcwearn/resume',
@@ -148,6 +176,7 @@ export const projects: Project[] = [
     tags: ['Python', 'Jinja2', 'LaTeX', 'Make', 'GitHub Actions'],
   },
   {
+    slug: 'workflows',
     name: 'workflows',
     category: 'tooling',
     source: 'https://github.com/jcwearn/workflows',
@@ -156,6 +185,7 @@ export const projects: Project[] = [
     tags: ['GitHub Actions', 'Bash', 'rsync', 'gitleaks'],
   },
   {
+    slug: 'cf-worker-email',
     name: 'cf-worker-email',
     category: 'tooling',
     source: 'https://github.com/jcwearn/cf-worker-email-public',
