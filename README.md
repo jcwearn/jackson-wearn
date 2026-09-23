@@ -38,6 +38,8 @@ src/
   pages/               Home, Portfolio, Resume, NotFound
   content/             projects.ts, resume.json + resume.ts
   hooks/useDarkMode.ts theme state
+  porchfest/           the /porchfest invite page, a separate entry
+porchfest/index.html   its HTML entry and share preview
 scripts/fetch-resume.ts
 scripts/build-og.ts    share card
 ```
@@ -92,6 +94,21 @@ right, so look at it.
 
 Sharing `/resume.pdf` previews the PDF itself rather than this card, which is the intent — it is a
 direct file link, and no `<meta>` tag affects it.
+
+## The porchfest page
+
+`/porchfest/` is an invite landing page for a Porchfest pregame brunch. It is not part of the app
+above. It has its own look, taken from the invite, and it needs its own share preview. Scrapers do
+not run JavaScript, so a route in the SPA would always preview as the site's card. It is a second
+Vite entry instead: `porchfest/index.html` has the Open Graph tags in it, `vite.config.ts` lists it in
+`rollupOptions.input`, and Pages serves the built `dist/porchfest/index.html` at `/porchfest/` with
+no redirect rules.
+
+The code is in `src/porchfest/`, with its own stylesheet (not `src/index.css`). The links and the
+"What is Porchfest?" text are in `content.ts`. The invite is `public/porchfest/invite.jpg`: the page
+shows it, and it is also the share preview, portrait and uncropped. Replace it with a JPEG under
+500KB and update `og:image:width` and `og:image:height` if the size changes. `src/porchfest/og.test.ts`
+fails if they disagree.
 
 ## Deployment
 

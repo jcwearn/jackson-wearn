@@ -1,4 +1,4 @@
-# Cache-Control for the share card, and nothing else.
+# Cache-Control for the share cards, and nothing else.
 #
 # The card is not fingerprinted the way /assets/* is, and scrapers cache hard.
 # A day is long enough to be free and short enough that replacing the card
@@ -17,4 +17,8 @@
 # This file is not _redirects. It decorates responses after routing and does not
 # affect matching, which is why it is safe here at all.
 /og.png
+  Cache-Control: public, max-age=86400
+
+# The /porchfest share preview, for the same reason.
+/porchfest/invite.jpg
   Cache-Control: public, max-age=86400

@@ -1,0 +1,109 @@
+@import 'tailwindcss';
+
+/* The invite's palette and lettering, and nothing from the main site's. */
+@theme {
+  --color-paper: #fbf6e9;
+  --color-ink: #1f2d1d;
+  --color-mustard: #e3b32c;
+  --color-rose: #e5415f;
+  --color-leaf: #3d5a2e;
+
+  --font-script: 'Caveat Brush', 'Bradley Hand', cursive;
+  --font-hand: 'Patrick Hand', 'Chalkboard SE', 'Comic Sans MS', sans-serif;
+  --font-body: Lora, Georgia, 'Times New Roman', serif;
+}
+
+html {
+  background-color: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  /* A faint mustard speckle, so the page reads as card stock rather than a flat fill. */
+  background-image: radial-gradient(rgb(227 179 44 / 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/*
+ * Envelope geometry. The envelope is 4:3 and the closed card lies sideways
+ * inside it, so the card's long side has to fit the envelope's width:
+ * 0.62 x 1.5 = 0.93. Open, the card grows to fill the column, and the stage
+ * shrinks from a full screen to exactly the card plus a margin, which is what
+ * pulls the rest of the page up underneath it.
+ */
+.stage {
+  --env-w: min(22rem, 100vw - 2.5rem);
+  --card-closed: calc(var(--env-w) * 0.62);
+  --card-open: min(100vw - 2rem, 32rem, (100svh - 4rem) / 1.5);
+  height: 100svh;
+  transition: height 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (min-width: 640px) {
+  .stage {
+    --env-w: 26rem;
+  }
+}
+
+.stage[data-revealed] {
+  height: calc(var(--card-open) * 1.5 + 4rem);
+}
+
+.envelope {
+  width: var(--env-w);
+}
+
+.card {
+  width: var(--card-closed);
+}
+
+.stage[data-revealed] .card {
+  width: var(--card-open);
+}
+
+@keyframes note-float {
+  0% {
+    transform: translate(0, 0) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), -45vh) scale(1.1) rotate(var(--rot));
+    opacity: 0;
+  }
+}
+
+.note {
+  animation: note-float 2.6s ease-out var(--delay) both;
+}
+
+@keyframes nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.nudge {
+  animation: nudge 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage,
+  .stage * {
+    transition: none !important;
+  }
+  .note {
+    display: none;
+  }
+  .nudge {
+    animation: none;
+  }
+}

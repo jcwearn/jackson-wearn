@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fbf6e9" />
+
+    <title>You're Invited · Oakhurst Porchfest Pregame Brunch</title>
+    <meta
+      name="description"
+      content="Pregame brunch with the Wearn Family · Sat, Oct 10 · 10 AM · 44 Spence Ave SE, Atlanta"
+    />
+    <meta name="robots" content="noindex, nofollow" />
+
+    <!--
+      A separate Vite entry rather than a route in the main app: scrapers do not
+      run JavaScript, so this page's share preview has to be baked into the HTML
+      it is served as. The preview is the invite itself, portrait and uncropped,
+      and every URL is absolute -- a relative og:image is the usual reason a
+      link pastes into iMessage as a blank rectangle.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Oakhurst Porchfest Pregame" />
+    <meta property="og:url" content="https://jacksonwearn.com/porchfest/" />
+    <meta property="og:title" content="You're Invited! Oakhurst Porchfest Pregame Brunch" />
+    <meta
+      property="og:description"
+      content="Pregame brunch with the Wearn Family · Sat, Oct 10 · 10 AM · 44 Spence Ave SE, Atlanta"
+    />
+    <meta property="og:image" content="https://jacksonwearn.com/porchfest/invite.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="1536" />
+    <meta
+      property="og:image:alt"
+      content="Invitation to the Oakhurst Porchfest Pregame Brunch with the Wearn Family, Saturday October 10 at 10 AM, 44 Spence Ave SE, Atlanta."
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="You're Invited! Oakhurst Porchfest Pregame Brunch" />
+    <meta
+      name="twitter:description"
+      content="Pregame brunch with the Wearn Family · Sat, Oct 10 · 10 AM · 44 Spence Ave SE, Atlanta"
+    />
+    <meta name="twitter:image" content="https://jacksonwearn.com/porchfest/invite.jpg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Lora:ital@0;1&family=Patrick+Hand&display=swap"
+    />
+    <link rel="preload" as="image" href="/porchfest/invite.jpg" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/porchfest/main.tsx"></script>
+  </body>
+</html>
