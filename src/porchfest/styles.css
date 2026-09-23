@@ -32,12 +32,19 @@ body {
  * 0.62 x 1.5 = 0.93. Open, the card grows to fill the column, and the stage
  * shrinks from a full screen to exactly the card plus a margin, which is what
  * pulls the rest of the page up underneath it.
+ *
+ * The open card is also capped by the screen height, leaving room below it for
+ * the top of the RSVP button, so a wide screen still shows there is more page.
+ *
+ * Clipped until the reveal, because the envelope drops below the screen as the
+ * card rises out, and that would otherwise make the page scrollable
+ * mid-animation. Not after, or it would cut off the card's shadow.
  */
 .stage {
   --env-w: min(22rem, 100vw - 2.5rem);
   --card-closed: calc(var(--env-w) * 0.62);
-  --card-open: min(100vw - 2rem, 32rem, (100svh - 4rem) / 1.5);
-  height: 100svh;
+  --card-open: min(100vw - 2rem, 32rem, (var(--screen-h, 100svh) - 9rem) / 1.5);
+  height: var(--screen-h, 100svh);
   transition: height 900ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -45,6 +52,10 @@ body {
   .stage {
     --env-w: 26rem;
   }
+}
+
+.stage:not([data-revealed]) {
+  overflow: clip;
 }
 
 .stage[data-revealed] {
@@ -81,6 +92,16 @@ body {
   animation: note-float 2.6s ease-out var(--delay) both;
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.fade-in {
+  animation: fade-in 700ms ease-out 300ms both;
+}
+
 @keyframes nudge {
   0%,
   100% {
@@ -103,7 +124,8 @@ body {
   .note {
     display: none;
   }
-  .nudge {
+  .nudge,
+  .fade-in {
     animation: none;
   }
 }

@@ -4,9 +4,16 @@ import type { Phase } from './useEnvelope'
 
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)'
 
+// The flap and the V cut out of the front, as CSS polygons. The wedding invite
+// used SVG clipPaths in objectBoundingBox units, which Firefox rendered with a
+// gap at the top corners where the two shapes should overlap. The points either
+// side of each tip round it off.
+const LID = 'polygon(0 0, 48% 94%, 50% 97%, 52% 94%, 100% 0)'
+const CUTOUT = 'polygon(0 0, 0 100%, 100% 100%, 100% 0, 97% 0, 52% 48%, 50% 50%, 48% 48%, 3% 0)'
+
 // Ported from the wedding invite (anupamaandjackson, src/routes/Invite.tsx), cut
-// down to one card and recoloured from the invite: the owl's dark green outside,
-// mustard inside, and a rose heart seal where the flap meets.
+// down to one card and recoloured from the invite: green outside, mustard inside,
+// and a rose seal with a music note where the flap meets.
 const Envelope: React.FC<{ phase: Phase; onOpen: () => void }> = ({ phase, onOpen }) => {
   const image = useRef<HTMLImageElement>(null)
   const [ready, setReady] = useState(false)
@@ -36,19 +43,16 @@ const Envelope: React.FC<{ phase: Phase; onOpen: () => void }> = ({ phase, onOpe
 
   const fade = { opacity: hidden ? 0 : 1, transition: 'opacity 700ms ease-out' }
 
+  // The mustard inside only exists once the flap starts to open, so no seam
+  // between the front and the flap can show a hairline of yellow while it is
+  // closed. It appears instantly on opening, where the flap is already in front
+  // of it, and fades out with the rest of the envelope.
+  const insideShown = flapOpen && !hidden
+  const insideOpacity = insideShown ? 1 : 0
+  const insideFade = `opacity ${insideShown ? 0 : 700}ms ease-out`
+
   return (
     <div className="envelope relative">
-      <svg width="0" height="0" className="absolute" aria-hidden="true">
-        <defs>
-          <clipPath id="lid-shape" clipPathUnits="objectBoundingBox">
-            <path d="M 0 0 L 0.48 0.94 Q 0.5 0.98, 0.52 0.94 L 1 0 Z" />
-          </clipPath>
-          <clipPath id="envelope-cutout" clipPathUnits="objectBoundingBox">
-            <path d="M 0 0 L 0 1 L 1 1 L 1 0 L 0.97 0 L 0.52 0.48 Q 0.5 0.52, 0.48 0.48 L 0.03 0 Z" />
-          </clipPath>
-        </defs>
-      </svg>
-
       <div
         className="relative w-full"
         style={{
@@ -61,32 +65,32 @@ const Envelope: React.FC<{ phase: Phase; onOpen: () => void }> = ({ phase, onOpe
         {/* Inside of the envelope */}
         <div
           className="absolute inset-0 rounded-b-lg bg-gradient-to-b from-[#e8bd3f] to-[#d6a21f]"
-          style={{ zIndex: 1, ...fade }}
+          style={{ zIndex: 1, opacity: insideOpacity, transition: insideFade }}
         />
 
         {/* Back half of the flap, which swings up behind the card */}
         <div
-          className="absolute top-0 -right-px -left-px"
+          className="absolute inset-x-0 top-0"
           style={{
             transformOrigin: 'top center',
             transform: flapOpen ? 'rotateX(180deg)' : 'rotateX(90deg)',
-            transition: 'transform 350ms ease-out 350ms, opacity 700ms ease-out',
+            transition: `transform 350ms ease-out 350ms, ${insideFade}`,
             zIndex: 3,
-            opacity: hidden ? 0 : 1,
+            opacity: insideOpacity,
           }}
         >
           <div
             className="w-full bg-gradient-to-b from-[#e8bd3f] to-[#d6a21f]"
-            style={{ clipPath: 'url(#lid-shape)', aspectRatio: '1.9/1' }}
+            style={{ clipPath: LID, aspectRatio: '1.9/1' }}
           />
         </div>
 
         {/* Front of the envelope, with the V cut out so the flap sits in it */}
         <div
-          className="absolute inset-0 overflow-hidden rounded-b-lg bg-gradient-to-b from-[#2c3f29] to-[#1f2d1d] shadow-xl"
-          style={{ zIndex: 10, clipPath: 'url(#envelope-cutout)', ...fade }}
+          className="absolute inset-0 overflow-hidden rounded-b-lg bg-gradient-to-b from-[#4f6b45] to-[#3e5637] shadow-xl"
+          style={{ zIndex: 10, clipPath: CUTOUT, ...fade }}
         >
-          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/20 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/10 to-transparent" />
           <p className="absolute inset-x-0 bottom-[9%] text-center font-script text-3xl text-mustard sm:text-4xl">
             You're invited!
           </p>
@@ -127,7 +131,7 @@ const Envelope: React.FC<{ phase: Phase; onOpen: () => void }> = ({ phase, onOpe
 
         {/* Front half of the flap, with the seal on its point */}
         <div
-          className="absolute top-0 -right-px -left-px"
+          className="absolute inset-x-0 top-0"
           style={{
             transformOrigin: 'top center',
             transform: flapOpen ? 'rotateX(90deg)' : 'rotateX(0deg)',
@@ -137,15 +141,15 @@ const Envelope: React.FC<{ phase: Phase; onOpen: () => void }> = ({ phase, onOpe
           }}
         >
           <div
-            className="w-full bg-gradient-to-b from-[#3a5236] to-[#2c3f29] shadow-md"
-            style={{ clipPath: 'url(#lid-shape)', aspectRatio: '1.9/1' }}
+            className="w-full bg-gradient-to-b from-[#62805a] to-[#4f6b45]"
+            style={{ clipPath: LID, aspectRatio: '1.9/1' }}
           />
           <span
             className="absolute top-[88%] left-1/2 flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-rose shadow-md ring-4 ring-paper/25 sm:size-14"
             aria-hidden="true"
           >
             <svg viewBox="0 0 24 24" className="size-6 fill-paper sm:size-7">
-              <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.9 1.3 5.3 3 1.4-1.7 3.2-3 5.3-3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" />
+              <path d="M9 4.5 20 2v13.2a3 3 0 1 1-2-2.83V6.1l-7 1.56v9.54a3 3 0 1 1-2-2.83z" />
             </svg>
           </span>
         </div>

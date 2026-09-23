@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Envelope from './Envelope'
-import { porchfestUrl, rsvpUrl, startsAt, tagline, whatIsPorchfest } from './content'
+import { porchfestUrl, rsvpUrl, tagline, whatIsPorchfest } from './content'
 import { useEnvelope } from './useEnvelope'
 
 // A burst of notes out of the card as it lands. Fixed rather than random so a
@@ -41,34 +41,34 @@ const Heart: React.FC = () => (
   </svg>
 )
 
-// The little sunburst dashes either side of the invite's ribbons.
-const Ticks: React.FC<{ flip?: boolean }> = ({ flip }) => (
-  <svg
-    viewBox="0 0 16 28"
-    className={`h-7 w-4 shrink-0 stroke-mustard ${flip ? '-scale-x-100' : ''}`}
-    strokeWidth="3"
-    strokeLinecap="round"
-    aria-hidden="true"
-  >
-    <path d="M3 4 L13 9 M2 14 L13 14 M3 24 L13 19" />
-  </svg>
-)
-
 const Page: React.FC = () => {
   const { phase, open, still } = useEnvelope()
   const revealed = phase === 'revealed'
+  const stage = useRef<HTMLElement>(null)
+
+  // The stage and the open card are sized from the screen height, measured once
+  // rather than read live from a viewport unit. Mobile Safari changes the
+  // viewport height as its toolbar collapses and expands while scrolling, which
+  // made the card jump between sizes. Re-measured only when the width changes,
+  // which is what a rotation does and a toolbar does not.
+  useEffect(() => {
+    let width = 0
+    const measure = () => {
+      if (window.innerWidth === width) return
+      width = window.innerWidth
+      stage.current?.style.setProperty('--screen-h', `${window.innerHeight}px`)
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [])
 
   return (
     <div className="min-h-svh overflow-x-clip font-body text-ink">
-      {/* The invite's thin mustard frame, around the whole screen */}
-      <div
-        className="pointer-events-none fixed inset-2 z-60 rounded-sm border-2 border-mustard/70"
-        aria-hidden="true"
-      />
-
       <h1 className="sr-only">Oakhurst Porchfest Pregame Brunch with the Wearn Family</h1>
 
       <section
+        ref={stage}
         className="stage relative flex items-center justify-center"
         data-revealed={revealed || undefined}
       >
@@ -107,10 +107,11 @@ const Page: React.FC = () => {
         )}
       </section>
 
+      {/* Not rendered as space until the reveal, so there is nothing to scroll to
+          while the envelope is still closed. */}
       <main
-        inert={!revealed}
-        className="mx-auto flex max-w-xl flex-col items-center gap-12 px-6 pb-16 transition-opacity delay-300 duration-700"
-        style={{ opacity: revealed ? 1 : 0 }}
+        hidden={!revealed}
+        className="fade-in mx-auto flex max-w-xl flex-col items-center gap-12 px-6 pb-16"
       >
         <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
           <a
@@ -130,12 +131,6 @@ const Page: React.FC = () => {
             Oakhurst Porchfest website
           </a>
         </div>
-
-        <p className="flex items-center gap-3 font-hand text-2xl sm:text-3xl">
-          <Ticks />
-          <span className="-rotate-1 bg-mustard px-6 py-2 shadow-sm">{startsAt}</span>
-          <Ticks flip />
-        </p>
 
         <section aria-labelledby="what-is" className="w-full">
           <h2 id="what-is" className="font-hand text-2xl tracking-wide text-rose uppercase">

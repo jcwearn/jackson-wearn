@@ -23,6 +23,4 @@ export const whatIsPorchfest =
   'and lawns throughout Oakhurst. Grab a map, take a stroll, and discover amazing music around ' +
   'every corner!'
 
-export const startsAt = 'Porchfest begins at noon!'
-
 export const tagline = ['Oakhurst', 'Music', 'Community', 'Good Company']

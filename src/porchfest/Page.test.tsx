@@ -10,9 +10,18 @@ afterEach(() => {
 
 const invite = () => screen.getByRole('img', { name: /pregame brunch/i })
 
+// Render and play the envelope through to the reveal.
+const renderOpened = () => {
+  vi.useFakeTimers()
+  render(<Page />)
+  fireEvent.load(invite())
+  fireEvent.click(screen.getByRole('button', { name: /tap to open/i }))
+  act(() => vi.advanceTimersByTime(2500))
+}
+
 describe('the porchfest page', () => {
   it('links to the RSVP form and the Porchfest site, both in a new tab', () => {
-    render(<Page />)
+    renderOpened()
 
     const rsvp = screen.getByRole('link', { name: 'RSVP' })
     const site = screen.getByRole('link', { name: /porchfest website/i })
@@ -25,7 +34,7 @@ describe('the porchfest page', () => {
   })
 
   it('says what Porchfest is', () => {
-    render(<Page />)
+    renderOpened()
 
     expect(screen.getByRole('heading', { name: 'What is Porchfest?' })).toBeInTheDocument()
     expect(screen.getByText(whatIsPorchfest)).toBeInTheDocument()
@@ -48,19 +57,20 @@ describe('the porchfest page', () => {
     expect(screen.getByRole('button', { name: /tap to open/i })).toBeEnabled()
   })
 
-  it('keeps the links out of reach until the envelope is opened', () => {
+  // Hidden rather than just transparent, so a closed envelope leaves nothing
+  // below it to scroll to.
+  it('keeps everything below the envelope hidden until it is opened', () => {
     vi.useFakeTimers()
     render(<Page />)
-    const rsvp = screen.getByRole('link', { name: 'RSVP' })
-    expect(rsvp.closest('[inert]')).not.toBeNull()
+    expect(screen.queryByRole('link', { name: 'RSVP' })).not.toBeInTheDocument()
 
     fireEvent.load(invite())
     fireEvent.click(screen.getByRole('button', { name: /tap to open/i }))
     act(() => vi.advanceTimersByTime(2499))
-    expect(rsvp.closest('[inert]')).not.toBeNull()
+    expect(screen.queryByRole('link', { name: 'RSVP' })).not.toBeInTheDocument()
 
     act(() => vi.advanceTimersByTime(1))
-    expect(rsvp.closest('[inert]')).toBeNull()
+    expect(screen.getByRole('link', { name: 'RSVP' })).toBeVisible()
     expect(screen.queryByRole('button', { name: /tap to open/i })).not.toBeInTheDocument()
   })
 
@@ -71,6 +81,6 @@ describe('the porchfest page', () => {
     render(<Page />)
 
     expect(screen.queryByRole('button', { name: /tap to open/i })).not.toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'RSVP' }).closest('[inert]')).toBeNull()
+    expect(screen.getByRole('link', { name: 'RSVP' })).toBeVisible()
   })
 })
