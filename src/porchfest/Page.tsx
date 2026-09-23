@@ -133,7 +133,10 @@ const Page: React.FC = () => {
         </div>
 
         <section aria-labelledby="what-is" className="w-full">
-          <h2 id="what-is" className="font-hand text-2xl tracking-wide text-rose uppercase">
+          <h2
+            id="what-is"
+            className="text-center font-hand text-2xl tracking-wide text-rose uppercase"
+          >
             What is Porchfest?
           </h2>
           <p className="mt-2 text-lg leading-relaxed">{whatIsPorchfest}</p>
