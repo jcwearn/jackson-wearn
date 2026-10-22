@@ -31,6 +31,25 @@ describe('routing', () => {
     expect(screen.getByRole('heading', { name: 'Resume', level: 2 })).toBeInTheDocument()
   })
 
+  it('renders a case study at /portfolio/:slug', () => {
+    renderAt('/portfolio/k3s-cluster')
+
+    expect(screen.getByRole('heading', { name: 'k3s-cluster', level: 2 })).toBeInTheDocument()
+  })
+
+  // Static segments outrank dynamic ones, so this must not be read as a slug.
+  it('renders the system map at /portfolio/system', () => {
+    renderAt('/portfolio/system')
+
+    expect(screen.getByRole('heading', { name: /how it fits together/i })).toBeInTheDocument()
+  })
+
+  it('renders NotFound for an unknown project slug', () => {
+    renderAt('/portfolio/no-such-project')
+
+    expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument()
+  })
+
   it('renders NotFound for an unknown path', () => {
     renderAt('/no-such-page')
 
@@ -40,7 +59,14 @@ describe('routing', () => {
   // The layout is a pathless parent route, so a mistake there silently drops
   // the header and footer from every page.
   it('keeps the shared chrome on every route', () => {
-    for (const path of ['/', '/portfolio', '/resume', '/nope']) {
+    for (const path of [
+      '/',
+      '/portfolio',
+      '/portfolio/system',
+      '/portfolio/k3s-cluster',
+      '/resume',
+      '/nope',
+    ]) {
       const { unmount } = renderAt(path)
       expect(screen.getByRole('heading', { name: 'Jackson Wearn', level: 1 })).toBeInTheDocument()
       expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument()
@@ -61,6 +87,16 @@ describe('nav', () => {
 
   it('marks the current page, and only the current page', () => {
     renderAt('/portfolio')
+
+    const nav = screen.getByRole('navigation', { name: 'Main' })
+    const current = [...nav.querySelectorAll('a[aria-current="page"]')].map((a) => a.textContent)
+    expect(current).toEqual(['Portfolio'])
+  })
+
+  // to="/portfolio" prefix-matches, which is what Nav.tsx's comment anticipates:
+  // a case study is still the portfolio as far as the nav is concerned.
+  it('keeps Portfolio marked on a nested case study', () => {
+    renderAt('/portfolio/k3s-cluster')
 
     const nav = screen.getByRole('navigation', { name: 'Main' })
     const current = [...nav.querySelectorAll('a[aria-current="page"]')].map((a) => a.textContent)

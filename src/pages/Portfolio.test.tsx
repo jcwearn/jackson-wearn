@@ -1,11 +1,21 @@
 import { render, screen, within } from '@testing-library/react'
+import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
+import { caseStudyFor } from '../content/case-studies'
 import { categories, projects } from '../content/projects'
 import Portfolio from './Portfolio'
 
+// Cards link to their case study, so this page now needs a router around it.
+const renderPortfolio = () =>
+  render(
+    <MemoryRouter>
+      <Portfolio />
+    </MemoryRouter>,
+  )
+
 describe('Portfolio', () => {
   it('renders one card per project', () => {
-    render(<Portfolio />)
+    renderPortfolio()
 
     expect(screen.getAllByRole('article')).toHaveLength(projects.length)
     for (const project of projects) {
@@ -13,19 +23,47 @@ describe('Portfolio', () => {
     }
   })
 
-  it('gives every card a source link that opens safely', () => {
-    render(<Portfolio />)
+  it('gives every public card a source link that opens safely', () => {
+    renderPortfolio()
 
+    const linked = projects.filter((project) => project.source !== undefined)
     const links = screen.getAllByRole('link', { name: 'Source' })
-    expect(links).toHaveLength(projects.length)
+    expect(links).toHaveLength(linked.length)
     for (const link of links) {
       expect(link).toHaveAttribute('target', '_blank')
       expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'))
     }
   })
 
+  // The failure this catches is a private repo linked as if it were public: it
+  // answers 200 to me and 404 to every visitor, so it reads as correct in review.
+  it('shows a chip instead of a link for projects with no public source', () => {
+    renderPortfolio()
+
+    for (const project of projects.filter((p) => p.source === undefined)) {
+      const card = screen.getByText(project.name).closest('article')!
+      expect(within(card).getByText('Private repo')).toBeInTheDocument()
+      expect(within(card).queryByRole('link', { name: 'Source' })).toBeNull()
+    }
+  })
+
+  it('links each card that has a case study to its page', () => {
+    renderPortfolio()
+
+    for (const project of projects) {
+      const card = screen.getByText(project.name).closest('article')!
+      const link = within(card).queryByRole('link', { name: /case study/i })
+
+      if (caseStudyFor(project.slug)) {
+        expect(link).toHaveAttribute('href', `/portfolio/${project.slug}`)
+      } else {
+        expect(link).toBeNull()
+      }
+    }
+  })
+
   it('renders every tag', () => {
-    render(<Portfolio />)
+    renderPortfolio()
 
     for (const project of projects) {
       const card = screen.getByText(project.name).closest('article')!
@@ -38,7 +76,7 @@ describe('Portfolio', () => {
   // Several projects are infrastructure with nowhere to visit, so the title is
   // only a link when there is a live site.
   it('links the title only when the project has a live url', () => {
-    render(<Portfolio />)
+    renderPortfolio()
 
     for (const project of projects) {
       const heading = screen.getByText(project.name)
@@ -53,7 +91,7 @@ describe('Portfolio', () => {
 
 describe('Portfolio grouping', () => {
   it('renders every category with its heading and description', () => {
-    render(<Portfolio />)
+    renderPortfolio()
 
     for (const category of categories) {
       expect(screen.getByRole('heading', { name: category.label })).toBeInTheDocument()
@@ -65,7 +103,7 @@ describe('Portfolio grouping', () => {
   // the first group. Every card still renders and every heading still appears,
   // so the page looks right and only the grouping is wrong.
   it('puts each project inside its own category section', () => {
-    render(<Portfolio />)
+    renderPortfolio()
 
     for (const category of categories) {
       const section = screen.getByRole('heading', { name: category.label }).closest('section')!
@@ -81,7 +119,7 @@ describe('Portfolio grouping', () => {
   // This sentence was true while the mirrors were being set up and quietly
   // stopped being true once they were. Asserting its absence is cheap.
   it('no longer promises more projects are coming', () => {
-    const { container } = render(<Portfolio />)
+    const { container } = renderPortfolio()
 
     expect(container.textContent).not.toMatch(/public snapshots go up/i)
   })

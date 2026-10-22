@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router'
 import ProjectCard from '../components/ProjectCard'
 import { categories, projects } from '../content/projects'
 
@@ -8,7 +9,16 @@ import { categories, projects } from '../content/projects'
 const Portfolio: React.FC = () => (
   <section className="w-full p-6">
     <h2 className="text-2xl font-bold">Portfolio</h2>
-    <p className="mt-2 text-gray-700 dark:text-gray-300">Things I&apos;ve built outside work.</p>
+    <p className="mt-2 text-gray-700 dark:text-gray-300">
+      Things I&apos;ve built outside work.{' '}
+      <Link
+        to="/portfolio/system"
+        className="underline underline-offset-4 hover:text-blue-600 dark:hover:text-blue-400"
+      >
+        See how they fit together
+      </Link>
+      .
+    </p>
 
     {categories.map((category) => {
       const inGroup = projects.filter((project) => project.category === category.id)
@@ -25,7 +35,7 @@ const Portfolio: React.FC = () => (
 
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {inGroup.map((project) => (
-              <ProjectCard key={project.source} project={project} />
+              <ProjectCard key={project.slug} project={project} />
             ))}
           </div>
         </section>
