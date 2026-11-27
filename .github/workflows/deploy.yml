@@ -27,7 +27,7 @@ permissions:
 
 jobs:
   deploy:
-    uses: jcwearn/workflows/.github/workflows/cloudflare-pages-deploy.yaml@1eafd3170f8e2ea3dc23d443c3fcfb0aa502e8b3 # v1.8.14
+    uses: jcwearn/workflows/.github/workflows/cloudflare-pages-deploy.yaml@e1cc176411dffc046fdbdef9d3262333ea1b0e64 # v1.9.1
     with:
       project-name: jackson-wearn
     secrets:
